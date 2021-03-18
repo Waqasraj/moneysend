@@ -495,7 +495,7 @@
     <string name="added_txt">Added</string>
     <string name="to_wallet_txt">To Wallet</string>
     <string name="view_wallet_txt">View Wallet</string>
-    <string name="bank_account_details">Bank account detail</string>
+    <string name="bank_account_details">Pay through bank</string>
     <string name="country_m">Country*</string>
     <string name="select_reltion_txt">Select the relation</string>
     <string name="e_gift_txt">E-Gift</string>
@@ -532,8 +532,8 @@
     <string name="local_transfer">To other wallet</string>
     <string name="inter_transfer">International Transfer</string>
     <string name="toti_pay_limited_txt">TotiPay Limited</string>
-    <string name="sort_code_number">60-83-71</string>
-    <string name="toti_account_no">70767547</string>
+    <string name="sort_code_number">04-29-31</string>
+    <string name="toti_account_no">34587240</string>
     <string name="no_bene_found">No beneficiary found</string>
     <string name="acount_number_m">Account number*</string>
     <string name="receiver_mobile_no">Receiver mobile number</string>
@@ -895,5 +895,10 @@ or telephone us at +44 - 7508084715. If you wish to make inquiries or complaints
     <string name="create_wallet_txt">Create Wallet</string>
     <string name="select_new_wallet">Please select new wallet</string>
     <string name="create_new_wallet">Create new wallet </string>
-    <string name="contact_to_admin">sorry for trouble , please contact to administrator</string>
+    <string name="contact_to_admin">sorry for the trouble, please contact to administrator</string>
+    <string name="plz_enter_amount">"Please enter amount "</string>
+    <string name="pay_text">Transfer now</string>
+    <string name="update_available">Update Available</string>
+    <string name="update_available_msg">Check out the latest version available of totipay application!</string>
+    <string name="update">Update</string>
 </resources>

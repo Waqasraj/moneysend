@@ -2,6 +2,7 @@ package tootipay.wallet.mywalletmoduleV.fragments;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RadioButton;
 
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,7 +43,7 @@ public class ChoosePaymentMethodForWalletLoadFragment extends BaseFragment<Activ
 
     CardDetailsAdapter detailsAdapter;
     List<GetCardDetailsResponse> responseList;
-
+    int selectedID = 0;
     @Override
     protected void injectView() {
 
@@ -64,22 +65,38 @@ public class ChoosePaymentMethodForWalletLoadFragment extends BaseFragment<Activ
         request.ipCountryName = getSessionManager().getIpCountryName();
         request.ipAddress = getSessionManager().getIpAddress();
 
-        binding.addNewCard.setOnClickListener(v -> {
-            AddCardDialog addCardDialog = new AddCardDialog(this);
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            addCardDialog.show(transaction, "");
+
+
+        selectedID = binding.radioThorughCard.getId();
+        binding.paymentOptionGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton radioButton = group.findViewById(checkedId);
+            selectedID = radioButton.getId();
+
         });
 
-        binding.throughBank.setOnClickListener(v -> {
-            if (IsNetworkConnection.checkNetworkConnection(getContext())) {
-                request.cardNumber = "";
-                request.expireDate = "";
-                request.securityNumber = "";
-                request.languageId = getSessionManager().getlanguageselection();
-                request.paymentType = PaymentTypeHelper.BANK_DEPOSIT;
-                loadWallet();
+
+
+
+        binding.btnPay.setOnClickListener(v -> {
+
+            if (selectedID != 0) {
+               if (selectedID == binding.radioThorughCard.getId()) {
+                   AddCardDialog addCardDialog = new AddCardDialog(this);
+                   FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                   addCardDialog.show(transaction, "");
+                } else if (selectedID == binding.radioThroughBank.getId()) {
+                   request.cardNumber = "";
+                   request.expireDate = "";
+                   request.securityNumber = "";
+                   request.languageId = getSessionManager().getlanguageselection();
+                   request.paymentType = PaymentTypeHelper.BANK_DEPOSIT;
+                   loadWallet();
+                }
             }
+
         });
+
+
 
 
         binding.loadCards.setOnClickListener(v -> {

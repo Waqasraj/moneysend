@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -62,7 +63,6 @@ public class SaveCardDialog extends BaseDialogFragment<ActivityAddCardsBinding>
         binding.cvvLayout.setVisibility(View.INVISIBLE);
         binding.addCardBtn.setOnClickListener(v -> {
             if (isValidate()) {
-
                 if (IsNetworkConnection.checkNetworkConnection(getContext())) {
                     SaveCardDetailsRequest request = new SaveCardDetailsRequest();
                     request.cardName = binding.txtCardholdername.getText().toString();
@@ -143,8 +143,11 @@ public class SaveCardDialog extends BaseDialogFragment<ActivityAddCardsBinding>
                     String code = formatNumbersAsCode(numbersOnly);
                     binding.numberTxt.removeTextChangedListener(this);
                     binding.numberTxt.setText(code);
-                    binding.numberTxt.setSelection(code.length());
-
+                    try {
+                        binding.numberTxt.setSelection(code.length());
+                    }catch (IndexOutOfBoundsException e ) {
+                        Log.e("afterTextChanged: ",e.getLocalizedMessage());
+                    }
                     binding.numberTxt.addTextChangedListener(this);
                 }
             }
@@ -173,9 +176,9 @@ public class SaveCardDialog extends BaseDialogFragment<ActivityAddCardsBinding>
         binding.expireTxt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (binding.expireTxt.getText().length() == 5) {
-                    binding.cvv.requestFocus();
-                }
+               // if (binding.expireTxt.getText().length() == 5) {
+                 //   binding.cvv.requestFocus();
+               // }
             }
 
             @Override

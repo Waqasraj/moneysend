@@ -17,6 +17,7 @@ import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import tootipay.wallet.ImagePickerActivity;
 import tootipay.wallet.databinding.FragmentBarcodeReaderBinding;
 import tootipay.wallet.fragments.BaseFragment;
 import tootipay.wallet.home_module.WalletViaQRCodeActivity;
@@ -436,8 +438,17 @@ public class BarcodeReaderFragment extends BaseFragment<FragmentBarcodeReaderBin
                 Uri selectedImage = data.getData();
                 mListener.onBitmapGallery(selectedImage);
             } else if (requestCode == SELECT_PHOTO) {
-                Uri selectedImage = data.getData();
-                performCrop(selectedImage);
+
+                Uri uri = data.getParcelableExtra("path");
+                try {
+                    // You can update this bitmap to your server
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getBaseActivity().getContentResolver(), uri);
+                    getCode(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+              //  Uri selectedImage = data.getData();
+               // performCrop(selectedImage);
             } else if (requestCode == 2) {
                 if (data != null) {
                     Bundle extras = data.getExtras();
@@ -489,6 +500,20 @@ public class BarcodeReaderFragment extends BaseFragment<FragmentBarcodeReaderBin
             Toast.makeText(getContext(), getString(R.string.wrong_qr_code), Toast.LENGTH_SHORT).show();
             Navigation.findNavController(getView()).navigateUp();
         }
+    }
+
+
+
+
+    private void launchGalleryIntent() {
+        Intent intent = new Intent(getBaseActivity(), ImagePickerActivity.class);
+        intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_GALLERY_IMAGE);
+
+        // setting aspect ratio
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
+        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
+        startActivityForResult(intent, 100);
     }
 
 
@@ -591,9 +616,12 @@ public class BarcodeReaderFragment extends BaseFragment<FragmentBarcodeReaderBin
 
 
     public void onClickGallery() {
-        Intent photoPic = new Intent(Intent.ACTION_PICK);
-        photoPic.setType("image/*");
-        startActivityForResult(photoPic, SELECT_PHOTO);
+//        Intent photoPic = new Intent(Intent.ACTION_PICK);
+//        photoPic.setType("image/*");
+//        startActivityForResult(photoPic, SELECT_PHOTO);
+
+
+        launchGalleryIntent();
 
     }
 

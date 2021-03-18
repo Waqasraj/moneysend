@@ -61,12 +61,13 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
         , OnWalletTransferConfirmation, OnSelectCurrency, OnGetTransferRates {
     WalletToWalletTransferRequest request;
     boolean isSendingCurrency = false;
-   // List<GetSendRecCurrencyResponse> walletCurrency;
+    // List<GetSendRecCurrencyResponse> walletCurrency;
 
     CalTransferRequest calTransferRequest;
     String paymentMode = "Wallet_Transfer";
 
     boolean isOwnAccount = false;
+    boolean isRatesShowing = false;
 
     @Override
     protected void injectView() {
@@ -103,13 +104,9 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
         } else if (TextUtils.isEmpty(binding.receivingCurrency.getText().toString())) {
             onMessage(getString(R.string.plz_select_receiving_currency));
             return false;
-        } else if (TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
-            onMessage(getString(R.string.please_enter_amount));
-            return false;
         }
         return true;
     }
-
 
 
     public boolean isNumberValidation() {
@@ -155,9 +152,9 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
 
     @Override
     protected void setUp(Bundle savedInstanceState) {
-       // if (walletCurrency == null) {
+        // if (walletCurrency == null) {
         //    walletCurrency = new ArrayList<>();
-      //  }
+        //  }
 
         assert getArguments() != null;
         isOwnAccount = getArguments().getBoolean("to_own_wallet", false);
@@ -180,8 +177,6 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
 
         request = new WalletToWalletTransferRequest();
         calTransferRequest = new CalTransferRequest();
-
-
 
 
         binding.numberLayout.mobilesignupb.addTextChangedListener(new TextWatcher() {
@@ -210,15 +205,28 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
             if (isCalTransferValidate()) {
                 calTransferRequest.PayoutCurrency = binding.receivingCurrency.getText().toString(); // set receiving currency
                 calTransferRequest.PayInCurrency = binding.sendingCurrency.getText().toString();
-                calTransferRequest.TransferCurrency = binding.sendingCurrency.getText().toString();
+                if (TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                        && TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    onMessage(getString(R.string.plz_enter_amount));
+                    return;
+                } else if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayInCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.sendingAmountField.getText().toString()));
+                } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayoutCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.payOutAmount.getText().toString()));
+                }
+
+
+                //    calTransferRequest.TransferCurrency = binding.sendingCurrency.getText().toString();
                 calTransferRequest.PaymentMode = paymentMode;
 
                 calTransferRequest.payInCountry = getSessionManager().getResidenceCountry();
                 calTransferRequest.payOutCountry = getSessionManager().getResidenceCountry();
 
-                calTransferRequest.TransferAmount = Double.parseDouble(
-                        NumberFormatter.removeCommas(binding.sendingAmountField
-                                .getText().toString()));
+
                 calTransferRequest.languageId = getSessionManager().getlanguageselection();
                 if (IsNetworkConnection.checkNetworkConnection(getActivity())) {
                     CheckRatesTask task = new CheckRatesTask(getActivity(), this);
@@ -233,29 +241,29 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
 
         binding.sendingCurrencyLayout.setOnClickListener(v -> {
             isSendingCurrency = true;
-           // if (walletCurrency.isEmpty()) {
-                if (IsNetworkConnection.checkNetworkConnection(getContext())) {
+            // if (walletCurrency.isEmpty()) {
+            if (IsNetworkConnection.checkNetworkConnection(getContext())) {
 //                    GetWalletCurrencyListRequest request = new GetWalletCurrencyListRequest();
 //                    request.languageId = getSessionManager().getlanguageselection();
 //                    GetWalletCurrencyListTask getWalletCurrencyListTask = new GetWalletCurrencyListTask(getContext()
 //                            , this);
 //                    getWalletCurrencyListTask.execute(request);
 
-                    showWallets(getSessionManager().getCustomerNo());
+                showWallets(getSessionManager().getCustomerNo());
 
-                } else {
-                    onMessage(getString(R.string.no_internet));
-                }
-           // } else {
-           //     showCurrencyDialog(walletCurrency);
-           // }
+            } else {
+                onMessage(getString(R.string.no_internet));
+            }
+            // } else {
+            //     showCurrencyDialog(walletCurrency);
+            // }
         });
 
         binding.receivngCurrencyLayout.setOnClickListener(v -> {
             isSendingCurrency = false;
-           // if (walletCurrency.isEmpty()) {
+            // if (walletCurrency.isEmpty()) {
 
-            if(isNumberValidation()) {
+            if (isNumberValidation()) {
                 if (IsNetworkConnection.checkNetworkConnection(getContext())) {
                     if (!isOwnAccount) {
                         showWallets(StringHelper.parseNumber(binding.numberLayout.countryCodeTextView.getText().toString()
@@ -269,9 +277,9 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
             }
 
 
-           // } else {
-             //   showCurrencyDialog(walletCurrency);
-           // }
+            // } else {
+            //   showCurrencyDialog(walletCurrency);
+            // }
         });
 
         binding.numberLayout.countrySpinnerSignIn.setOnClickListener(v -> {
@@ -285,6 +293,7 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
 
         });
 
+
         binding.sendingAmountField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -293,44 +302,43 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    binding.mainLayout.setVisibility(View.GONE);
-                    binding.convertNow.setVisibility(View.VISIBLE);
-                    binding.payOutAmount.setText("");
-                }
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                int cursorPosition = binding.sendingAmountField.getSelectionEnd();
-                String originalStr = binding.sendingAmountField.getText().toString();
-
-                //To restrict only two digits after decimal place
-                binding.sendingAmountField.setFilters(new InputFilter[]{new MoneyValueFilter(2)});
-
-                try {
-                    binding.sendingAmountField.removeTextChangedListener(this);
-                    String value = binding.sendingAmountField.getText().toString();
-
-                    if (value != null && !value.equals("")) {
-                        if (value.startsWith(".")) {
-                            binding.sendingAmountField.setText("0.");
-                        }
-                        if (value.startsWith("0") && !value.startsWith("0.")) {
-                            binding.sendingAmountField.setText("");
-                        }
-                        String str = binding.sendingAmountField.getText().toString().replaceAll(",", "");
-                        if (!value.equals(""))
-                            binding.sendingAmountField.setText(getDecimalFormattedString(str));
-
-                        int diff = binding.sendingAmountField.getText().toString().length() - originalStr.length();
-                        binding.sendingAmountField.setSelection(cursorPosition + diff);
-
+                if (s.length() > 0) {
+                    binding.mainLayout.setVisibility(View.GONE);
+                    binding.convertNow.setVisibility(View.VISIBLE);
+                    if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString()) &&
+                            !isRatesShowing) {
+                        binding.payOutAmount.setText("");
                     }
-                    binding.sendingAmountField.addTextChangedListener(this);
-                } catch (Exception ex) {
-                    Log.e("Textwatcher", ex.getMessage());
-                    binding.sendingAmountField.addTextChangedListener(this);
+
+                }
+            }
+        });
+
+        binding.payOutAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    binding.mainLayout.setVisibility(View.GONE);
+                    binding.convertNow.setVisibility(View.VISIBLE);
+                    if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                            && !isRatesShowing) {
+                        binding.sendingAmountField.setText("");
+                    }
                 }
             }
         });
@@ -345,7 +353,7 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
                         request.receiptMobileNo = StringHelper.parseNumber(binding.numberLayout.mobilesignupb.getText().toString());
                     }
 
-                    request.customerNo = ((MoneyTransferMainLayout) getBaseActivity()).sessionManager.getCustomerNo();
+                    request.customerNo = getSessionManager().getCustomerNo();
                     request.description = binding.description.getText().toString();
                     request.transferAmount = NumberFormatter.removeCommas(
                             binding.sendingAmountField.getText().toString());
@@ -425,12 +433,12 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
 
     @Override
     public void onCurrencyResponse(List<GetSendRecCurrencyResponse> response) {
-      //  if (response.size() == 1) {
-         //   binding.sendingCurrency.setText(response.get(0).currencyShortName);
-         ///   setSendingCurrencyImage(response.get(0).image_URL);
-       // } else {
-            showCurrencyDialog(response);
-       // }
+        //  if (response.size() == 1) {
+        //   binding.sendingCurrency.setText(response.get(0).currencyShortName);
+        ///   setSendingCurrencyImage(response.get(0).image_URL);
+        // } else {
+        showCurrencyDialog(response);
+        // }
     }
 
     void showCurrencyDialog(List<GetSendRecCurrencyResponse> response) {
@@ -453,6 +461,9 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
 
         binding.mainLayout.setVisibility(View.GONE);
         binding.convertNow.setVisibility(View.VISIBLE);
+
+        binding.sendingAmountField.setText("");
+        binding.payOutAmount.setText("");
     }
 
     @Override
@@ -461,11 +472,25 @@ public class WalletTransferActivity extends BaseFragment<ActivityWalletTransferB
     }
 
     public void showRates(CalTransferResponse response) {
-        binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+        isRatesShowing = true;
+
+        if(calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.PayoutCurrency)) {
+            if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+            } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+            }
+        }else if (calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+        } else if (calTransferRequest.PayoutCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+        }
         binding.commissionAmountTxt.setText(String.valueOf(
                 NumberFormatter.decimal(response.commission.floatValue())));
         binding.mainLayout.setVisibility(View.VISIBLE);
         binding.convertNow.setVisibility(View.GONE);
+
+        isRatesShowing = false;
     }
 
 

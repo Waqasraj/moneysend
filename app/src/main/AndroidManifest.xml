@@ -35,7 +35,7 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".mywalletmoduleV.CreateWalletActivity"></activity>
+        <activity android:name=".mywalletmoduleV.CreateWalletActivity"/>
 
         <service
             android:name=".OnClearFromRecentService"

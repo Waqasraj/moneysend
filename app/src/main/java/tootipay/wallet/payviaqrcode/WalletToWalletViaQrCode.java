@@ -3,8 +3,10 @@ package tootipay.wallet.payviaqrcode;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -59,6 +61,7 @@ public class WalletToWalletViaQrCode extends BaseFragment<ActivityWalletTransfer
     CalTransferRequest calTransferRequest;
     String paymentMode = "Wallet_Transfer";
     String mobile_no = "";
+    boolean isRatesShowing = false;
 
     @Override
     public void onResume() {
@@ -77,9 +80,6 @@ public class WalletToWalletViaQrCode extends BaseFragment<ActivityWalletTransfer
         } else if (TextUtils.isEmpty(binding.receiverName.getText().toString())) {
             onMessage(getString(R.string.recever_name_error));
             return false;
-        } else if (TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
-            onMessage(getString(R.string.please_enter_amount));
-            return false;
         }
 
         return true;
@@ -92,9 +92,6 @@ public class WalletToWalletViaQrCode extends BaseFragment<ActivityWalletTransfer
             return false;
         } else if (TextUtils.isEmpty(binding.receivingCurrency.getText().toString())) {
             onMessage(getString(R.string.plz_select_receiving_currency));
-            return false;
-        } else if (TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
-            onMessage(getString(R.string.please_enter_amount));
             return false;
         }
         return true;
@@ -139,11 +136,25 @@ public class WalletToWalletViaQrCode extends BaseFragment<ActivityWalletTransfer
             if (isCalTransferValidate()) {
                 calTransferRequest.PayoutCurrency = binding.receivingCurrency.getText().toString(); // set receiving currency
                 calTransferRequest.PayInCurrency = binding.sendingCurrency.getText().toString();
-                calTransferRequest.TransferCurrency = binding.sendingCurrency.getText().toString();
+
+                if(TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                        && TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    onMessage(getString(R.string.plz_enter_amount));
+                    return;
+                } else if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayInCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.sendingAmountField.getText().toString()));
+                } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayoutCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.payOutAmount.getText().toString()));
+                }
+
+
+
                 calTransferRequest.PaymentMode = paymentMode;
-                calTransferRequest.TransferAmount = Double.parseDouble(
-                        NumberFormatter.removeCommas(binding.sendingAmountField
-                                .getText().toString()));
+
                 calTransferRequest.languageId = getSessionManager().getlanguageselection();
                 if (IsNetworkConnection.checkNetworkConnection(getActivity())) {
                     CheckRatesTask task = new CheckRatesTask(getActivity(), this);
@@ -195,7 +206,54 @@ public class WalletToWalletViaQrCode extends BaseFragment<ActivityWalletTransfer
            // }
         });
 
+        binding.sendingAmountField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    binding.mainLayout.setVisibility(View.GONE);
+                    binding.convertNow.setVisibility(View.VISIBLE);
+                    if(!TextUtils.isEmpty(binding.payOutAmount.getText().toString()) &&
+                            !isRatesShowing) {
+                        binding.payOutAmount.setText("");
+                    }
+
+                }
+            }
+        });
+
+        binding.payOutAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    binding.mainLayout.setVisibility(View.GONE);
+                    binding.convertNow.setVisibility(View.VISIBLE);
+                    if(!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                            && !isRatesShowing) {
+                        binding.sendingAmountField.setText("");
+                    }
+                }
+            }
+        });
         binding.sendNowBtn.setOnClickListener(v -> {
             if (isValidate()) {
 
@@ -297,11 +355,24 @@ public class WalletToWalletViaQrCode extends BaseFragment<ActivityWalletTransfer
     }
 
     public void showRates(CalTransferResponse response) {
-        binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+        isRatesShowing = true;
+        if(calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.PayoutCurrency)) {
+            if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+            } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+            }
+        }else if(calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+        } else if(calTransferRequest.PayoutCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+        }
         binding.commissionAmountTxt.setText(String.valueOf(
                 NumberFormatter.decimal(response.commission.floatValue())));
         binding.mainLayout.setVisibility(View.VISIBLE);
         binding.convertNow.setVisibility(View.GONE);
+
+        isRatesShowing = false;
     }
 
     @Override

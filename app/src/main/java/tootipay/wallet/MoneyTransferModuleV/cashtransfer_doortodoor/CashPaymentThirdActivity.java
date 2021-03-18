@@ -68,7 +68,7 @@ public class CashPaymentThirdActivity extends BaseFragment<ActivityCashPaymentTh
     TootiPayRequest tootiPayRequest;
     boolean showingBreakPoint = false;
     boolean isSendingCurrencySelected = false;
-
+    boolean isRatesShowing = false;
 
     @Override
     public boolean isValidate() {
@@ -77,11 +77,6 @@ public class CashPaymentThirdActivity extends BaseFragment<ActivityCashPaymentTh
             return false;
         } else if (TextUtils.isEmpty(binding.receivingCurrency.getText().toString())) {
             onMessage(getString(R.string.plz_select_receiving_currency));
-            return false;
-        }
-
-        else if (TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
-            onMessage(getString(R.string.please_enter_amount));
             return false;
         }
         return true;
@@ -128,12 +123,11 @@ public class CashPaymentThirdActivity extends BaseFragment<ActivityCashPaymentTh
                 .beneficiaryDetails.imageURL);
         calTransferRequest.PayoutCurrency = binding.receivingCurrency.getText().toString(); // set receiving currency
         calTransferRequest.PayInCurrency = binding.sendingCurrency.getText().toString();
-        calTransferRequest.TransferCurrency = binding.sendingCurrency.getText().toString();
+
         calTransferRequest.languageId = getSessionManager().getlanguageselection();
         calTransferRequest.payInCountry = getSessionManager().getResidenceCountry();
         calTransferRequest.payOutCountry = ((MoneyTransferMainLayout) getBaseActivity()).bankTransferViewModel
                 .beneficiaryDetails.payOutCountryCode;
-
 
 
         binding.sendingAmountField.addTextChangedListener(new TextWatcher() {
@@ -144,47 +138,49 @@ public class CashPaymentThirdActivity extends BaseFragment<ActivityCashPaymentTh
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
                     binding.afterConvertRatesLayout.setVisibility(View.GONE);
                     binding.convertNow.setVisibility(View.VISIBLE);
                     binding.commissionLayout.setVisibility(View.GONE);
                     binding.sendingAmountLayout.setVisibility(View.GONE);
                     binding.viewPriceBreakDown.setText(getString(R.string.view_price_break_down));
-                    binding.payOutAmount.setText("");
+                    if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString()) &&
+                            !isRatesShowing) {
+                        binding.payOutAmount.setText("");
+                    }
+
                 }
+            }
+        });
+
+        binding.payOutAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                int cursorPosition = binding.sendingAmountField.getSelectionEnd();
-                String originalStr = binding.sendingAmountField.getText().toString();
-
-                //To restrict only two digits after decimal place
-                binding.sendingAmountField.setFilters(new InputFilter[]{new MoneyValueFilter(2)});
-
-                try {
-                    binding.sendingAmountField.removeTextChangedListener(this);
-                    String value = binding.sendingAmountField.getText().toString();
-
-                    if (value != null && !value.equals("")) {
-                        if (value.startsWith(".")) {
-                            binding.sendingAmountField.setText("0.");
-                        }
-                        if (value.startsWith("0") && !value.startsWith("0.")) {
-                            binding.sendingAmountField.setText("");
-                        }
-                        String str = binding.sendingAmountField.getText().toString().replaceAll(",", "");
-                        if (!value.equals(""))
-                            binding.sendingAmountField.setText(getDecimalFormattedString(str));
-
-                        int diff = binding.sendingAmountField.getText().toString().length() - originalStr.length();
-                        binding.sendingAmountField.setSelection(cursorPosition + diff);
-
+                if (s.length() > 0) {
+                    binding.afterConvertRatesLayout.setVisibility(View.GONE);
+                    binding.convertNow.setVisibility(View.VISIBLE);
+                    binding.commissionLayout.setVisibility(View.GONE);
+                    binding.sendingAmountLayout.setVisibility(View.GONE);
+                    binding.viewPriceBreakDown.setText(getString(R.string.view_price_break_down));
+                    if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                            && !isRatesShowing) {
+                        binding.sendingAmountField.setText("");
                     }
-                    binding.sendingAmountField.addTextChangedListener(this);
-                } catch (Exception ex) {
-                    Log.e("Textwatcher", ex.getMessage());
-                    binding.sendingAmountField.addTextChangedListener(this);
                 }
             }
         });
@@ -216,11 +212,21 @@ public class CashPaymentThirdActivity extends BaseFragment<ActivityCashPaymentTh
 
         binding.convertNow.setOnClickListener(v -> {
             if (isValidate()) {
-
+                if (TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                        && TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    onMessage(getString(R.string.plz_enter_amount));
+                    return;
+                } else if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayInCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.sendingAmountField.getText().toString()));
+                } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayoutCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.payOutAmount.getText().toString()));
+                }
                 calTransferRequest.PaymentMode = paymentMode;
-                calTransferRequest.TransferAmount = Double.parseDouble(
-                        NumberFormatter.removeCommas(binding.sendingAmountField
-                                .getText().toString()));
+
                 if (IsNetworkConnection.checkNetworkConnection(getActivity())) {
                     CheckRatesTask task = new CheckRatesTask(getActivity(), this);
                     task.execute(calTransferRequest);
@@ -334,8 +340,23 @@ public class CashPaymentThirdActivity extends BaseFragment<ActivityCashPaymentTh
 
 
     public void showRates(CalTransferResponse response) {
-        binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
-        binding.sendingAmountTxt.setText(NumberFormatter.decimal(
+
+        isRatesShowing = true;
+
+        if(calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.PayoutCurrency)) {
+            if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+            } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+            }
+        }else if (calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+        } else if (calTransferRequest.PayoutCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+        }
+//
+//        binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+       binding.sendingAmountTxt.setText(NumberFormatter.decimal(
                 response.payInAmount.floatValue()));
         binding.totalPayableAmount.setText(String.valueOf(
                 NumberFormatter.decimal(response.totalPayable.floatValue())));
@@ -343,6 +364,7 @@ public class CashPaymentThirdActivity extends BaseFragment<ActivityCashPaymentTh
                 NumberFormatter.decimal(response.commission.floatValue())));
         binding.afterConvertRatesLayout.setVisibility(View.VISIBLE);
         binding.convertNow.setVisibility(View.GONE);
+        isRatesShowing = false;
     }
 
     @Override

@@ -81,21 +81,53 @@ public class WalletHistoryRequestTask extends AsyncTask<WalletHistoryRequest, Vo
                     for (int i = 0; i < array.length(); i++) {
                         WalletTransferHistoryResponse response = new WalletTransferHistoryResponse();
                         JSONObject object = array.getJSONObject(i);
-                        response.transactionDate = object.getString("TRANSACTIONDATE");
-                        response.paymentTypeID = object.getInt("PAYMENTTYPEID");
-                        response.transactionNumber = object.getString("TRANSACTIONNUMBER");
-                        response.sendingCurrency = object.getString("SENDINGCURRENCY");
-                        response.customerNo = object.getString("CUSTOMERNO");
-                        response.status = object.getString("STATUS");
+                        try{
+                            response.transactionDate = object.getString("TRANSACTIONDATE");
+                        }catch (Exception e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try{
+                            response.paymentTypeID = object.getInt("PAYMENTTYPEID");
+                        }catch (Exception e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try{
+                            response.transactionNumber = object.getString("TRANSACTIONNUMBER");
+                        }catch (Exception e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try{
+                            response.sendingCurrency = object.getString("SENDINGCURRENCY");
+                        }catch (Exception e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try{
+                            response.customerNo = object.getString("CUSTOMERNO");
+                        }catch (Exception e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try{
+                            response.status = object.getString("STATUS");
+                        }catch (Exception e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
 
                         try{
                             response.paymentType = object.getString("PAYMENTTYPE");
                         }catch (Exception e) {
                             Log.e("doInBackground: ", e.getLocalizedMessage());
                         }
+                        try{
+                            response.sendingAmount = object.getString("SENDINGAMOUNT");
+                        }catch (Exception e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try{
+                            response.receivingAmount = object.getString("RECEIVINGAMOUNT");
+                        }catch (Exception e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
 
-                        response.sendingAmount = object.getString("SENDINGAMOUNT");
-                        response.receivingAmount = object.getString("RECEIVINGAMOUNT");
                         if (!response.status.equalsIgnoreCase("RECEIVED")) {
                             try{
                                 response.receiverName = object.getString("RECEIVERNAME");
@@ -113,20 +145,53 @@ public class WalletHistoryRequestTask extends AsyncTask<WalletHistoryRequest, Vo
                 } else {
                     jsonObject = jsonObject.getJSONObject("Table1");
                     WalletTransferHistoryResponse response = new WalletTransferHistoryResponse();
+                    try{
+                        response.transactionDate = jsonObject.getString("TRANSACTIONDATE");
+                    }catch (Exception e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try{
+                        response.paymentTypeID = jsonObject.getInt("PAYMENTTYPEID");
+                    }catch (Exception e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try{
+                        response.transactionNumber = jsonObject.getString("TRANSACTIONNUMBER");
+                    }catch (Exception e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try{
+                        response.sendingCurrency = jsonObject.getString("SENDINGCURRENCY");
+                    }catch (Exception e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try{
+                        response.customerNo = jsonObject.getString("CUSTOMERNO");
+                    }catch (Exception e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try{
+                        response.status = jsonObject.getString("STATUS");
+                    }catch (Exception e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
 
-                    response.transactionDate = jsonObject.getString("TRANSACTIONDATE");
                     try{
                         response.paymentType = jsonObject.getString("PAYMENTTYPE");
                     }catch (Exception e) {
                         Log.e("doInBackground: ", e.getLocalizedMessage());
                     }
-                    response.paymentTypeID = jsonObject.getInt("PAYMENTTYPEID");
-                    response.transactionNumber = jsonObject.getString("TRANSACTIONNUMBER");
-                    response.sendingCurrency = jsonObject.getString("SENDINGCURRENCY");
-                    response.customerNo = jsonObject.getString("CUSTOMERNO");
-                    response.status = jsonObject.getString("STATUS");
-                    response.sendingAmount = jsonObject.getString("SENDINGAMOUNT");
-                    response.receivingAmount = jsonObject.getString("RECEIVINGAMOUNT");
+                    try{
+                        response.sendingAmount = jsonObject.getString("SENDINGAMOUNT");
+                    }catch (Exception e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try{
+                        response.receivingAmount = jsonObject.getString("RECEIVINGAMOUNT");
+                    }catch (Exception e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+
                     if (!response.status.equalsIgnoreCase("RECEIVED")) {
                         try{
                             response.receiverName = jsonObject.getString("RECEIVERNAME");
@@ -139,8 +204,6 @@ public class WalletHistoryRequestTask extends AsyncTask<WalletHistoryRequest, Vo
                     if (response.status.equalsIgnoreCase("RECEIVED")) {
                         response.senderName = jsonObject.getString("SENDERNAME");
                     }
-
-
                     list.add(response);
                 }
                 // onSuccess();

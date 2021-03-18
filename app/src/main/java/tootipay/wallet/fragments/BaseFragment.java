@@ -40,6 +40,11 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment
         return ((TootiBaseActivity) getBaseActivity()).sessionManager;
     }
 
+
+    public boolean isYemenClient() {
+        return getSessionManager().getCustomerPhone().substring(0 , 3).equalsIgnoreCase("967");
+    }
+
     public void showProgress() {
     }
 
@@ -96,9 +101,12 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment
 
 
     public void onMessage(String message) {
-        Snackbar snackbar = Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT);
-        snackbar.setAction(getString(R.string.cancel), v -> snackbar.dismiss());
-        snackbar.show();
+        if(message != null) {
+            Snackbar snackbar = Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT);
+            snackbar.setAction(getString(R.string.cancel), v -> snackbar.dismiss());
+            snackbar.show();
+        }
+
     }
 
 

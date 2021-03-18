@@ -1,76 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainSignUpLinearlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    android:id="@+id/mainSignUpLinearlayout"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="7"
-        >
+        android:weightSum="7">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            >
+            android:layout_weight="2">
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            >
+            android:layout_weight="2">
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
-            android:weightSum="5"
             android:background="@drawable/bg_green_round_up"
             android:orientation="vertical"
-            >
+            android:weightSum="5">
+
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="0dp"
-                android:layout_margin="10dp"
                 android:layout_gravity="center"
+                android:layout_margin="10dp"
                 android:layout_weight=".1"
-                android:background="@drawable/edittext_grey"
-                >
+                android:background="@drawable/edittext_grey">
 
             </TextView>
+
             <TextView
-                android:layout_weight="1.5"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:text="Wait"
-                android:gravity="center"
-                android:textSize="25sp"
-
-                android:textColor="@android:color/white"
+                android:layout_marginStart="20sp"
                 android:layout_marginTop="20sp"
                 android:layout_marginEnd="20sp"
-                android:layout_marginStart="20sp"
-                >
+                android:layout_weight="1.5"
+
+                android:gravity="center"
+                android:text="Wait"
+                android:textColor="@android:color/white"
+                android:textSize="25sp">
 
             </TextView>
+
             <LinearLayout
-                android:layout_weight="3.4"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="3.4"
                 android:gravity="center|center_vertical">
+
                 <ImageView
 
 
                     android:layout_width="wrap_content"
-                    android:background="@mipmap/ic_progress"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_height="wrap_content">
+                    android:background="@mipmap/ic_progress">
 
                 </ImageView>
             </LinearLayout>
@@ -233,16 +234,18 @@
         android:layout_marginTop="@dimen/_15sdp"
         android:background="@drawable/yellow_btn"
         android:text="@string/sign_up_with_email_mobile" />
+
     <TextView
         android:id="@+id/alreadyhaveotptextview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
         android:layout_marginTop="@dimen/_30sdp"
+        android:gravity="center"
         android:text="@string/already_have_an_otp"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/_10ssp" />
+
     <TextView
         android:id="@+id/alreadyhaveaccounttextview"
         android:layout_width="wrap_content"

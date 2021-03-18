@@ -3,6 +3,8 @@ package tootipay.wallet.MoneyTransferModuleV;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,6 +48,7 @@ public class MoneyTransferPaymentFragment extends BaseFragment<ActivityCashPayme
     CardDetailsAdapter detailsAdapter;
     List<GetCardDetailsResponse> responseList;
     boolean isWalletAllowed = true;
+    int selectedID = 0;
 
     @Override
     public void onResume() {
@@ -70,31 +73,38 @@ public class MoneyTransferPaymentFragment extends BaseFragment<ActivityCashPayme
                 .concat(" ").concat("(").concat(tootiPayRequest.payInCurrency).concat(")"));
         getWalletBalance();
 
-        binding.walletLayout.setOnClickListener(v -> {
-            if(isWalletAllowed) {
-                tootiPayRequest.paymentTypeId = PaymentTypeHelper.WALLET;
-                tootiPayRequest.languageId = getSessionManager().getlanguageselection();
-                getPin();
-            } else {
-                onMessage("Selected Sending Currency is not in wallet");
+        selectedID = binding.radioWallet.getId();
+        binding.paymentOptionGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton radioButton = group.findViewById(checkedId);
+            selectedID = radioButton.getId();
+
+        });
+
+
+        binding.btnPay.setOnClickListener(v -> {
+
+            if (selectedID != 0) {
+                if (selectedID == binding.radioWallet.getId()) {
+                    if (isWalletAllowed) {
+                        tootiPayRequest.paymentTypeId = PaymentTypeHelper.WALLET;
+                        tootiPayRequest.languageId = getSessionManager().getlanguageselection();
+                        getPin();
+                    } else {
+                        onMessage("Selected Sending Currency is not in wallet");
+                    }
+                } else if (selectedID == binding.radioThorughCard.getId()) {
+                    AddCardDialog dialog = new AddCardDialog(this);
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    dialog.show(transaction, "");
+                } else if (selectedID == binding.radioThroughBank.getId()) {
+                    tootiPayRequest.cardNumber = "";
+                    tootiPayRequest.expireDate = "";
+                    tootiPayRequest.securityNumber = "";
+                    tootiPayRequest.paymentTypeId = PaymentTypeHelper.BANK_DEPOSIT;
+                    tootiPayRequest.languageId = getSessionManager().getlanguageselection();
+                    getPin();
+                }
             }
-
-        });
-
-        binding.addNewCard.setOnClickListener(v -> {
-            AddCardDialog dialog = new AddCardDialog(this::onCardDetailsSSubmit);
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            dialog.show(transaction, "");
-        });
-
-
-        binding.throughBank.setOnClickListener(v -> {
-            tootiPayRequest.cardNumber = "";
-            tootiPayRequest.expireDate = "";
-            tootiPayRequest.securityNumber = "";
-            tootiPayRequest.paymentTypeId = PaymentTypeHelper.BANK_DEPOSIT;
-            tootiPayRequest.languageId = getSessionManager().getlanguageselection();
-            getPin();
 
         });
 
@@ -243,8 +253,8 @@ public class MoneyTransferPaymentFragment extends BaseFragment<ActivityCashPayme
 
 
     void goToReceipt() {
-        Intent intent = new Intent(getBaseActivity() , TransactionReceiptActivity.class);
-        intent.putExtra("txn_number"  , transactionNumber);
+        Intent intent = new Intent(getBaseActivity(), TransactionReceiptActivity.class);
+        intent.putExtra("txn_number", transactionNumber);
         startActivity(intent);
         getBaseActivity().finish();
     }

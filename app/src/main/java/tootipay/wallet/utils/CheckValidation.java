@@ -39,8 +39,7 @@ public class CheckValidation {
      * @return
      */
     public static boolean isPhoneNumberValidate(String mobNumber, String countryCode) {
-        Log.e( "isPhoneNumberValidate: ",mobNumber );
-        Log.e( "isPhoneNumberValidate: ",countryCode );
+
         if (!isValidMobile(mobNumber)) {
             return false;
         }
@@ -101,7 +100,7 @@ public class CheckValidation {
 
     public static boolean isValidMobile(String phone) {
         if (!Pattern.matches("[a-zA-Z]+", phone)) {
-            return phone.length() > 6 && phone.length() <= 10;
+            return phone.length() > 6 && phone.length() <= 11;
         }
         return false;
     }

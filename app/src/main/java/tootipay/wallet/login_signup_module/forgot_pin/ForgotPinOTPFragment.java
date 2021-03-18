@@ -281,7 +281,8 @@ public class ForgotPinOTPFragment extends BaseFragment<EnterOtpBankingBinding>
     public void onSuccess(String s) {
         onMessage(s);
         startTimer();
-        binding.resendsignup.setTextColor(getResources().getColor(R.color.black_50));
+        binding.resendsignup
+                .setTextColor(getResources().getColor(R.color.black_50));
     }
 
 }

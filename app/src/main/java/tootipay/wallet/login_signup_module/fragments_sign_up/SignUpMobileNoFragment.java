@@ -46,12 +46,20 @@ public class SignUpMobileNoFragment extends BaseFragment<FragmentSignUpMobileNoB
         } else if (TextUtils.isEmpty(binding.numberLayout.mobilesignupb.getText().toString())) {
             onMessage(getString(R.string.enter_mobile_no_error));
             return false;
-        } else if (!CheckValidation.isPhoneNumberValidate(binding.numberLayout.mobilesignupb.getText().toString()
+        }
+        else if (!CheckValidation.isPhoneNumberValidate(binding.numberLayout.mobilesignupb.getText().toString()
                 , binding.numberLayout.countryCodeTextView.getText().toString())) {
             onMessage(getString(R.string.invalid_number));
             return false;
         }
         return true;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -60,7 +68,6 @@ public class SignUpMobileNoFragment extends BaseFragment<FragmentSignUpMobileNoB
         binding.numberLayout.countrySpinnerSignIn.setOnClickListener(v -> {
             Constants.hideKeyboard(getBaseActivity());
             if (IsNetworkConnection.checkNetworkConnection(getContext())) {
-
                 DialogCountry dialogCountry = new DialogCountry(this);
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 dialogCountry.show(transaction, "");
@@ -80,14 +87,10 @@ public class SignUpMobileNoFragment extends BaseFragment<FragmentSignUpMobileNoB
         binding.continuesighupb.setOnClickListener(v -> {
             Constants.hideKeyboard(getBaseActivity());
             if (isValidate()) {
-
                 String phoneNumber = binding.numberLayout.mobilesignupb.getText().toString();
-
                 String userNumber = binding.numberLayout.countryCodeTextView.getText().toString().concat(phoneNumber);
-
                 ((MainActivityLoginSignUp) getBaseActivity())
                         .viewModel.registerUserRequest.phoneNumber = StringHelper.parseNumber(userNumber);
-
 
                 if (IsNetworkConnection.checkNetworkConnection(getContext())) {
                     Navigation.findNavController(v)
@@ -117,8 +120,6 @@ public class SignUpMobileNoFragment extends BaseFragment<FragmentSignUpMobileNoB
                 }
             }
         });
-
-
     }
 
     @Override

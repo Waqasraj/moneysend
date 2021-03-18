@@ -63,6 +63,9 @@ public class RepeatWalletTransactionActivity extends TootiBaseActivity<ActivityR
     String paymentMode = "Wallet_Transfer";
     String customerNo;
 
+    boolean isRatesShowing = false;
+
+
     public boolean isValidate() {
         if (TextUtils.isEmpty(binding.mobilesignupb.getText().toString())) {
             onMessage(getString(R.string.enter_mobile_no_error));
@@ -87,9 +90,6 @@ public class RepeatWalletTransactionActivity extends TootiBaseActivity<ActivityR
         } else if (TextUtils.isEmpty(binding.receivingCurrency.getText().toString())) {
             onMessage(getString(R.string.plz_select_receiving_currency));
             return false;
-        } else if (TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
-            onMessage(getString(R.string.please_enter_amount));
-            return false;
         }
         return true;
     }
@@ -104,7 +104,7 @@ public class RepeatWalletTransactionActivity extends TootiBaseActivity<ActivityR
         customerNo = getIntent().getStringExtra("customer_no");
         String receiverName = getIntent().getStringExtra("receiver_name");
         binding.countrySpinnerSignIn.setVisibility(View.GONE);
-      //  binding.numberLayout.countrySpinnerSignIn.setVisibility(View.GONE);
+        //  binding.numberLayout.countrySpinnerSignIn.setVisibility(View.GONE);
         binding.mobilesignupb.setText(customerNo);
         binding.receiverName.setText(receiverName);
 
@@ -133,11 +133,21 @@ public class RepeatWalletTransactionActivity extends TootiBaseActivity<ActivityR
             if (isCalTransferValidate()) {
                 calTransferRequest.PayoutCurrency = binding.receivingCurrency.getText().toString(); // set receiving currency
                 calTransferRequest.PayInCurrency = binding.sendingCurrency.getText().toString();
-                calTransferRequest.TransferCurrency = binding.sendingCurrency.getText().toString();
+                if (TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                        && TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    onMessage(getString(R.string.plz_enter_amount));
+                    return;
+                } else if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayInCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.sendingAmountField.getText().toString()));
+                } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayoutCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.payOutAmount.getText().toString()));
+                }
                 calTransferRequest.PaymentMode = paymentMode;
-                calTransferRequest.TransferAmount = Double.parseDouble(
-                        NumberFormatter.removeCommas(binding.sendingAmountField
-                                .getText().toString()));
+
                 calTransferRequest.languageId = sessionManager.getlanguageselection();
                 if (IsNetworkConnection.checkNetworkConnection(this)) {
                     CheckRatesTask task = new CheckRatesTask(this, this);
@@ -151,25 +161,25 @@ public class RepeatWalletTransactionActivity extends TootiBaseActivity<ActivityR
 
         binding.sendingCurrencyLayout.setOnClickListener(v -> {
             isSendingCurrency = true;
-         //   if (walletCurrency.isEmpty()) {
-                if (IsNetworkConnection.checkNetworkConnection(this)) {
+            //   if (walletCurrency.isEmpty()) {
+            if (IsNetworkConnection.checkNetworkConnection(this)) {
 //                    GetWalletCurrencyListRequest request = new GetWalletCurrencyListRequest();
 //                    GetWalletCurrencyListTask getWalletCurrencyListTask = new GetWalletCurrencyListTask(this
 //                            , this);
 //                    getWalletCurrencyListTask.execute(request);
 
-                    showWallets(sessionManager.getCustomerNo());
-                } else {
-                    onMessage(getString(R.string.no_internet));
-                }
-           // } else {
-             //   showCurrencyDialog(walletCurrency);
-           // }
+                showWallets(sessionManager.getCustomerNo());
+            } else {
+                onMessage(getString(R.string.no_internet));
+            }
+            // } else {
+            //   showCurrencyDialog(walletCurrency);
+            // }
         });
 
         binding.receivngCurrencyLayout.setOnClickListener(v -> {
             isSendingCurrency = false;
-          //  if (walletCurrency.isEmpty()) {
+            //  if (walletCurrency.isEmpty()) {
             if (IsNetworkConnection.checkNetworkConnection(this)) {
 //                    GetWalletCurrencyListRequest request = new GetWalletCurrencyListRequest();
 //                    request.languageId = sessionManager.getlanguageselection();
@@ -177,12 +187,12 @@ public class RepeatWalletTransactionActivity extends TootiBaseActivity<ActivityR
 //                            , this);
 //                    getWalletCurrencyListTask.execute(request);
 
-                    showWallets(customerNo);
-                } else {
-                    onMessage(getString(R.string.no_internet));
-                }
-         //   } else {
-           //     showCurrencyDialog(walletCurrency);
+                showWallets(customerNo);
+            } else {
+                onMessage(getString(R.string.no_internet));
+            }
+            //   } else {
+            //     showCurrencyDialog(walletCurrency);
             //}
         });
 
@@ -204,35 +214,38 @@ public class RepeatWalletTransactionActivity extends TootiBaseActivity<ActivityR
 
             @Override
             public void afterTextChanged(Editable s) {
-                int cursorPosition = binding.sendingAmountField.getSelectionEnd();
-                String originalStr = binding.sendingAmountField.getText().toString();
-
-                //To restrict only two digits after decimal place
-                binding.sendingAmountField.setFilters(new InputFilter[]{new MoneyValueFilter(2)});
-
-                try {
-                    binding.sendingAmountField.removeTextChangedListener(this);
-                    String value = binding.sendingAmountField.getText().toString();
-
-                    if (value != null && !value.equals("")) {
-                        if (value.startsWith(".")) {
-                            binding.sendingAmountField.setText("0.");
-                        }
-                        if (value.startsWith("0") && !value.startsWith("0.")) {
-                            binding.sendingAmountField.setText("");
-                        }
-                        String str = binding.sendingAmountField.getText().toString().replaceAll(",", "");
-                        if (!value.equals(""))
-                            binding.sendingAmountField.setText(getDecimalFormattedString(str));
-
-                        int diff = binding.sendingAmountField.getText().toString().length() - originalStr.length();
-                        binding.sendingAmountField.setSelection(cursorPosition + diff);
-
+                if (s.length() > 0) {
+                    binding.mainLayout.setVisibility(View.GONE);
+                    binding.convertNow.setVisibility(View.VISIBLE);
+                    if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString()) &&
+                            !isRatesShowing) {
+                        binding.payOutAmount.setText("");
                     }
-                    binding.sendingAmountField.addTextChangedListener(this);
-                } catch (Exception ex) {
-                    Log.e("Textwatcher", ex.getMessage());
-                    binding.sendingAmountField.addTextChangedListener(this);
+
+                }
+            }
+        });
+
+        binding.payOutAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    binding.mainLayout.setVisibility(View.GONE);
+                    binding.convertNow.setVisibility(View.VISIBLE);
+                    if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                            && !isRatesShowing) {
+                        binding.sendingAmountField.setText("");
+                    }
                 }
             }
         });
@@ -313,20 +326,34 @@ public class RepeatWalletTransactionActivity extends TootiBaseActivity<ActivityR
     }
 
     public void showRates(CalTransferResponse response) {
-        binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+        isRatesShowing = true;
+
+        if(calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.PayoutCurrency)) {
+            if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+            } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+            }
+        } else if (calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+        } else if (calTransferRequest.PayoutCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+        }
         binding.commissionAmountTxt.setText(String.valueOf(
                 NumberFormatter.decimal(response.commission.floatValue())));
         binding.mainLayout.setVisibility(View.VISIBLE);
         binding.convertNow.setVisibility(View.GONE);
+
+        isRatesShowing = false;
     }
 
     @Override
     public void onCurrencyResponse(List<GetSendRecCurrencyResponse> response) {
-     //   if (response.size() == 1) {
-       //     binding.sendingCurrency.setText(response.get(0).currencyShortName);
-         //   setSendingCurrencyImage(response.get(0).image_URL);
+        //   if (response.size() == 1) {
+        //     binding.sendingCurrency.setText(response.get(0).currencyShortName);
+        //   setSendingCurrencyImage(response.get(0).image_URL);
         //} else {
-            showCurrencyDialog(response);
+        showCurrencyDialog(response);
         //}
     }
 
@@ -334,11 +361,16 @@ public class RepeatWalletTransactionActivity extends TootiBaseActivity<ActivityR
     public void onCurrencySelect(GetSendRecCurrencyResponse response) {
         if (isSendingCurrency) {
             binding.sendingCurrency.setText(response.currencyShortName);
+            binding.payOutAmount.setText("");
             setSendingCurrencyImage(response.image_URL);
         } else {
             binding.receivingCurrency.setText(response.currencyShortName);
             setReceivingCurrencyImage(response.image_URL);
+            binding.payOutAmount.setText("");
         }
+
+        binding.mainLayout.setVisibility(View.GONE);
+        binding.convertNow.setVisibility(View.VISIBLE);
     }
 
     @Override

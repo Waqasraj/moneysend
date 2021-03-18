@@ -67,7 +67,7 @@ public class GetCustomerWalletDetailsTask extends
     @Override
     protected List<GetCustomerWalletDetailsResponse> doInBackground(GetCustomerWalletDetailsRequest... getCustomerWalletDetailsRequests) {
         List<GetCustomerWalletDetailsResponse> responseList = new ArrayList<>();
-        Log.e("doInBackground: ", getCustomerWalletDetailsRequests[0].getXML());
+
         try {
             String responseString = HTTPHelper.getResponse(getCustomerWalletDetailsRequests[0]
                             .getXML(), SoapActionHelper.ACTION_GET_CUSTOMER_WALLET
@@ -147,7 +147,7 @@ public class GetCustomerWalletDetailsTask extends
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    //    Collections.swap(responseList , 0 , 1);
+
         return responseList;
     }
 }

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "96098094517",
+    "project_id": "tottipay-1b5f9",
+    "storage_bucket": "tottipay-1b5f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96098094517:android:1fa769d23a18d138bb5dfc",
+        "android_client_info": {
+          "package_name": "tootipay.wallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96098094517-67vdn0nsffp072rv2r9eq606u7m00ij8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tootipay.wallet",
+            "certificate_hash": "e92583642741ed0659900883ac939e95c6d4a4d9"
+          }
+        },
+        {
+          "client_id": "96098094517-2uddh43ng2d9ud9f4k0n7i0k7nuc018b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxWXp_-UFSUPv4lhC7Pm-kLrBT2igVaBI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "96098094517-2uddh43ng2d9ud9f4k0n7i0k7nuc018b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

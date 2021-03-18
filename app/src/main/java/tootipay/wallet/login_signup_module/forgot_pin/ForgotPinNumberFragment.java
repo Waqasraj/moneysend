@@ -42,7 +42,6 @@ public class ForgotPinNumberFragment extends BaseFragment<ForgotPinNumberEmailLa
 
     @Override
     public boolean isValidate() {
-
         if (isLoginWithNumber) {
             if (TextUtils.isEmpty(binding.numberLayout.countryCodeTextView.getText().toString())) {
                 onMessage(getString(R.string.select_country));

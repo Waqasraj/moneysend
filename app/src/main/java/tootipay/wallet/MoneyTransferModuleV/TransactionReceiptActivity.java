@@ -270,16 +270,37 @@ public class TransactionReceiptActivity extends TootiBaseActivity<ReceiptLayoutM
         //  Uri uri = Uri.fromFile(outputFile);
 
         Uri uri = FileProvider.getUriForFile(this,
-                "totipay.wallet.provider", outputFile);
+                "tootipay.wallet.provider", outputFile);
 
 
-        Intent share = new Intent();
-        share.setAction(Intent.ACTION_SEND);
-        share.setType("application/pdf");
-        share.putExtra(Intent.EXTRA_STREAM, uri);
-        share.setPackage("com.whatsapp");
 
-        startActivity(share);
+        if(isAppInstalled("com.whatsapp")) {
+            Intent share = new Intent();
+            share.setAction(Intent.ACTION_SEND);
+            share.setType("application/pdf");
+            share.putExtra(Intent.EXTRA_STREAM, uri);
+            share.setPackage("com.whatsapp");
+
+            startActivity(share);
+        } else {
+            onMessage("Package is not installed");
+        }
+
+
+    }
+
+
+    private boolean isAppInstalled(String packageName) {
+        PackageManager pm = getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
     }
 
     private void createPdfForOthers() {
@@ -332,7 +353,7 @@ public class TransactionReceiptActivity extends TootiBaseActivity<ReceiptLayoutM
         //  Uri uri = Uri.fromFile(outputFile);
 
         Uri uri = FileProvider.getUriForFile(this,
-                "totipay.wallet.provider", outputFile);
+                "tootipay.wallet.provider", outputFile);
 
 
         Intent intent = ShareCompat.IntentBuilder.from(this)

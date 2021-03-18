@@ -66,7 +66,7 @@ public class TransferToOwnWalletActivity extends TootiBaseActivity<CurrencyConve
     String paymentMode = "Wallet_Transfer";
 
     boolean isOwnAccount = true;
-
+    boolean isRatesShowing = false;
 
     @Override
     public void onResume() {
@@ -86,9 +86,6 @@ public class TransferToOwnWalletActivity extends TootiBaseActivity<CurrencyConve
             return false;
         } else if (TextUtils.isEmpty(binding.receivingCurrency.getText().toString())) {
             onMessage(getString(R.string.plz_select_receiving_currency));
-            return false;
-        } else if (TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
-            onMessage(getString(R.string.please_enter_amount));
             return false;
         }
         return true;
@@ -161,13 +158,27 @@ public class TransferToOwnWalletActivity extends TootiBaseActivity<CurrencyConve
 
         binding.convertNow.setOnClickListener(v -> {
             if (isCalTransferValidate()) {
-                calTransferRequest.PayoutCurrency = binding.receivingCurrency.getText().toString(); // set receiving currency
-                calTransferRequest.PayInCurrency = binding.sendingCurrency.getText().toString();
-                calTransferRequest.TransferCurrency = binding.sendingCurrency.getText().toString();
+               calTransferRequest.PayoutCurrency = binding.receivingCurrency.getText().toString(); // set receiving currency
+               calTransferRequest.PayInCurrency = binding.sendingCurrency.getText().toString();
+               // calTransferRequest.TransferCurrency = binding.sendingCurrency.getText().toString();
+
+                if(TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                        && TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    onMessage(getString(R.string.plz_enter_amount));
+                    return;
+                } else if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayInCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.sendingAmountField.getText().toString()));
+                } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                    calTransferRequest.TransferCurrency = calTransferRequest.PayoutCurrency;
+                    calTransferRequest.TransferAmount = Double.parseDouble(NumberFormatter.removeCommas(
+                            binding.payOutAmount.getText().toString()));
+                }
+
+
                 calTransferRequest.PaymentMode = paymentMode;
-                calTransferRequest.TransferAmount = Double.parseDouble(
-                        NumberFormatter.removeCommas(binding.sendingAmountField
-                                .getText().toString()));
+
                 calTransferRequest.languageId = sessionManager.getlanguageselection();
                 if (IsNetworkConnection.checkNetworkConnection(this)) {
                     CheckRatesTask task = new CheckRatesTask(this, this);
@@ -236,52 +247,48 @@ public class TransferToOwnWalletActivity extends TootiBaseActivity<CurrencyConve
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    binding.mainLayout.setVisibility(View.GONE);
-                    binding.convertNow.setVisibility(View.VISIBLE);
-                    binding.payOutAmount.setText("");
-                }
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                int cursorPosition = binding.sendingAmountField.getSelectionEnd();
-                String originalStr = binding.sendingAmountField.getText().toString();
-
-                //To restrict only two digits after decimal place
-                binding.sendingAmountField.setFilters(new InputFilter[]{new MoneyValueFilter(2)});
-
-                try {
-                    binding.sendingAmountField.removeTextChangedListener(this);
-                    String value = binding.sendingAmountField.getText().toString();
-
-                    if (value != null && !value.equals("")) {
-                        if (value.startsWith(".")) {
-                            binding.sendingAmountField.setText("0.");
-                        }
-                        if (value.startsWith("0") && !value.startsWith("0.")) {
-                            binding.sendingAmountField.setText("");
-                        }
-                        String str = binding.sendingAmountField.getText().toString().replaceAll(",", "");
-                        if (!value.equals(""))
-                            binding.sendingAmountField.setText(getDecimalFormattedString(str));
-
-                        int diff = binding.sendingAmountField.getText().toString().length() - originalStr.length();
-                        binding.sendingAmountField.setSelection(cursorPosition + diff);
-
+                if (s.length() > 0) {
+                    binding.mainLayout.setVisibility(View.GONE);
+                    binding.convertNow.setVisibility(View.VISIBLE);
+                    if(!TextUtils.isEmpty(binding.payOutAmount.getText().toString()) &&
+                            !isRatesShowing) {
+                        binding.payOutAmount.setText("");
                     }
-                    binding.sendingAmountField.addTextChangedListener(this);
-                } catch (Exception ex) {
-                    Log.e("Textwatcher", ex.getMessage());
-                    binding.sendingAmountField.addTextChangedListener(this);
+
                 }
             }
         });
+        binding.payOutAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    binding.mainLayout.setVisibility(View.GONE);
+                    binding.convertNow.setVisibility(View.VISIBLE);
+                    if(!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())
+                            && !isRatesShowing) {
+                        binding.sendingAmountField.setText("");
+                    }
+                }
+            }
+        });
         binding.sendNowBtn.setOnClickListener(v -> {
             if (isValidate()) {
                 if (sessionManager.getISKYCApproved()) {
-
 
                     if (!isOwnAccount) {
                         request.receiptMobileNo = StringHelper.parseNumber(binding.numberLayout.countryCodeTextView.getText().toString()
@@ -289,7 +296,6 @@ public class TransferToOwnWalletActivity extends TootiBaseActivity<CurrencyConve
                     } else {
                         request.receiptMobileNo = StringHelper.parseNumber(binding.numberLayout.mobilesignupb.getText().toString());
                     }
-
 
                     request.customerNo = sessionManager.getCustomerNo();
                     request.description = binding.description.getText().toString();
@@ -300,13 +306,11 @@ public class TransferToOwnWalletActivity extends TootiBaseActivity<CurrencyConve
                     request.ipAddress = sessionManager.getIpAddress();
                     request.ipCountryName = sessionManager.getIpCountryName();
 
-
                     WalletToWalletConfirmDialog dialog = new WalletToWalletConfirmDialog(
                             request, binding.receiverName.getText().toString(), this
                     );
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     dialog.show(transaction, "");
-
 
                 } else {
                     onMessage(getString(R.string.plz_complete_kyc));
@@ -386,16 +390,20 @@ public class TransferToOwnWalletActivity extends TootiBaseActivity<CurrencyConve
     public void onCurrencySelect(GetSendRecCurrencyResponse response) {
         if (isSendingCurrency) {
             binding.sendingCurrency.setText(response.currencyShortName);
+
             binding.payOutAmount.setText("");
             setSendingCurrencyImage(response.image_URL);
         } else {
             binding.receivingCurrency.setText(response.currencyShortName);
+
             binding.payOutAmount.setText("");
             setReceivingCurrencyImage(response.image_URL);
         }
 
         binding.mainLayout.setVisibility(View.GONE);
         binding.convertNow.setVisibility(View.VISIBLE);
+        binding.sendingAmountField.setText("");
+        binding.payOutAmount.setText("");
     }
 
     @Override
@@ -404,11 +412,25 @@ public class TransferToOwnWalletActivity extends TootiBaseActivity<CurrencyConve
     }
 
     public void showRates(CalTransferResponse response) {
-        binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+        isRatesShowing = true;
+
+        if(calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.PayoutCurrency)) {
+            if (!TextUtils.isEmpty(binding.sendingAmountField.getText().toString())) {
+                binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+            } else if (!TextUtils.isEmpty(binding.payOutAmount.getText().toString())) {
+                binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+            }
+        }else if(calTransferRequest.PayInCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
+        } else if(calTransferRequest.PayoutCurrency.equalsIgnoreCase(calTransferRequest.TransferCurrency)) {
+            binding.sendingAmountField.setText(NumberFormatter.decimal(response.payInAmount.floatValue()));
+        }
+      //  binding.payOutAmount.setText(NumberFormatter.decimal(response.payoutAmount.floatValue()));
         binding.commissionAmountTxt.setText(String.valueOf(
                 NumberFormatter.decimal(response.commission.floatValue())));
         binding.mainLayout.setVisibility(View.VISIBLE);
         binding.convertNow.setVisibility(View.GONE);
+        isRatesShowing = false;
     }
 
 

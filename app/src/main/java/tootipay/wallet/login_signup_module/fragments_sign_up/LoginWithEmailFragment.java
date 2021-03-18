@@ -21,6 +21,7 @@ import tootipay.wallet.di.apicaller.GetCustomerProfileTask;
 import tootipay.wallet.di.apicaller.LoginRequestTask;
 import tootipay.wallet.di.restRequest.GetCustomerProfileImageRequest;
 import tootipay.wallet.di.restResponse.GetProfileImage;
+import tootipay.wallet.di.retrofit.RestApi;
 import tootipay.wallet.di.retrofit.RestClient;
 import tootipay.wallet.fragments.BaseFragment;
 import tootipay.wallet.home_module.NewDashboardActivity;
@@ -131,6 +132,18 @@ public class LoginWithEmailFragment extends BaseFragment<EnterMobileLoginBinding
         if (userCode.length() < 4) {
             onMessage(getString(R.string.askfordigit));
         } else {
+
+            if(binding.rememberMeBox.isChecked()) {
+
+                if (!TextUtils.isEmpty(binding.mobilesignupb
+                        .getText().toString())) {
+                    getSessionManager().userEmailRemember(
+                            binding.mobilesignupb.getText().toString()
+                    );
+                }
+            }
+
+
             LoginRequest loginRequest = new LoginRequest();
             loginRequest.emailAddress = binding.mobilesignupb.getText().toString();
             loginRequest.mobileNumber = "";
@@ -226,7 +239,7 @@ public class LoginWithEmailFragment extends BaseFragment<EnterMobileLoginBinding
     @Override
     public void onGetCustomerProfile(CustomerProfile customerProfile) {
         getSessionManager().setCustomerGet(customerProfile);
-
+        getSessionManager().setDocumentsUploaded(customerProfile.isDocUploaded);
         getSessionManager().isKYCApproved(customerProfile.isApprovedKYC);
         getCustomerImage();
     }
@@ -237,7 +250,8 @@ public class LoginWithEmailFragment extends BaseFragment<EnterMobileLoginBinding
         request.Customer_No = ((MainActivityLoginSignUp) getBaseActivity()).sessionManager.getCustomerNo();
         request.credentials.LanguageID = Integer.parseInt(getSessionManager().getlanguageselection());
 
-        Call<GetProfileImage> call = RestClient.get().getCustomerImage(request.Customer_No
+        RestApi restApi = RestClient.getClient().create(RestApi.class);
+        Call<GetProfileImage> call = restApi.getCustomerImage(request.Customer_No
                 , request.credentials.PartnerCode, request.credentials.UserName, request.credentials.UserPassword
                 , request.credentials.LanguageID);
 

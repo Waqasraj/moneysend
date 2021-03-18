@@ -9,6 +9,8 @@ import androidx.navigation.Navigation;
 import tootipay.wallet.R;
 import tootipay.wallet.base.TootiBaseActivity;
 import tootipay.wallet.databinding.MainSignupLoginLayoutBinding;
+import tootipay.wallet.di.RequestHelper.GetTotiPayAccDetails;
+import tootipay.wallet.di.apicaller.TotiPayBankAccountDetailsTask;
 import tootipay.wallet.login_signup_module.viewmodels.LoginRegisterViewModel;
 
 public class MainActivityLoginSignUp extends TootiBaseActivity<MainSignupLoginLayoutBinding> {
@@ -27,6 +29,11 @@ public class MainActivityLoginSignUp extends TootiBaseActivity<MainSignupLoginLa
         navController = Navigation.findNavController(this, R.id.dashboard);
         viewModel = new ViewModelProvider(this).get(LoginRegisterViewModel.class);
 
+//        GetTotiPayAccDetails request = new GetTotiPayAccDetails();
+//        request.languageId = sessionManager.getlanguageselection();
+//        request.countryShortName = "yem";
+//        TotiPayBankAccountDetailsTask task = new TotiPayBankAccountDetailsTask();
+//        task.execute(request);
     }
 
 

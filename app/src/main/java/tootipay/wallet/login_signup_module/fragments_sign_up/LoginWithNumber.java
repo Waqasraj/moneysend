@@ -38,6 +38,7 @@ import tootipay.wallet.di.apicaller.GetCustomerProfileTask;
 import tootipay.wallet.di.apicaller.LoginRequestTask;
 import tootipay.wallet.di.restRequest.GetCustomerProfileImageRequest;
 import tootipay.wallet.di.restResponse.GetProfileImage;
+import tootipay.wallet.di.retrofit.RestApi;
 import tootipay.wallet.di.retrofit.RestClient;
 import tootipay.wallet.dialogs.DialogCountry;
 import tootipay.wallet.fragments.BaseFragment;
@@ -68,15 +69,6 @@ public class LoginWithNumber extends BaseFragment<LoginWithNumberLayoutBinding> 
     @Override
     public void onResume() {
         super.onResume();
-        binding.countryCodeTextView.setText(((MainActivityLoginSignUp)
-                getBaseActivity()).sessionManager.getUserCountryCode());
-        binding.mobilesignupb.setText(((MainActivityLoginSignUp)
-                getBaseActivity()).sessionManager.getUserNumberRemember());
-        Log.e( "onResume: ",getSessionManager().getURLFlag() );
-        setSendingCurrencyImage(getSessionManager().getURLFlag());
-        if (!TextUtils.isEmpty(binding.mobilesignupb.getText())) {
-            binding.rememberMeBox.setChecked(true);
-        }
     }
 
     @Override
@@ -99,7 +91,22 @@ public class LoginWithNumber extends BaseFragment<LoginWithNumberLayoutBinding> 
     @Override
     protected void setUp(Bundle savedInstanceState) {
         // initialize code EditText ids in array
+        if(getSessionManager().getUserCountryCode() != null) {
+            binding.countryCodeTextView.setText(((MainActivityLoginSignUp)
+                    getBaseActivity()).sessionManager.getUserCountryCode());
+        }
+        if(!getSessionManager().getUserNumberRemember().isEmpty()) {
+            binding.mobilesignupb.setText(getSessionManager()
+                    .getUserNumberRemember());
+        }
+        if (getSessionManager().getURLFlag() != null) {
+            setSendingCurrencyImage(getSessionManager().getURLFlag());
+        }
 
+
+        if (!TextUtils.isEmpty(binding.mobilesignupb.getText())) {
+            binding.rememberMeBox.setChecked(true);
+        }
         setSendingCurrencyImage(getSessionManager().getURLFlag());
 
         codeInputIds = new Integer[]{
@@ -160,8 +167,8 @@ public class LoginWithNumber extends BaseFragment<LoginWithNumberLayoutBinding> 
             );
         }
           } else {
-                ((MainActivityLoginSignUp) getBaseActivity())
-                       .sessionManager.userPhoneRemember(getSessionManager().getURLFlag(),
+                getSessionManager()
+                        .userPhoneRemember(getSessionManager().getURLFlag(),
                        "", "");
             }
       });
@@ -342,6 +349,7 @@ public class LoginWithNumber extends BaseFragment<LoginWithNumberLayoutBinding> 
 
         ((MainActivityLoginSignUp) getBaseActivity())
                 .sessionManager.isKYCApproved(customerProfile.isApprovedKYC);
+
         getSessionManager().setDocumentsUploaded(customerProfile.isDocUploaded);
         getCustomerImage();
     }
@@ -351,7 +359,8 @@ public class LoginWithNumber extends BaseFragment<LoginWithNumberLayoutBinding> 
         GetCustomerProfileImageRequest request = new GetCustomerProfileImageRequest();
         request.Customer_No = ((MainActivityLoginSignUp) getBaseActivity()).sessionManager.getCustomerNo();
         request.credentials.LanguageID = Integer.parseInt(getSessionManager().getlanguageselection());
-        Call<GetProfileImage> call = RestClient.get().getCustomerImage(request.Customer_No
+        RestApi restApi = RestClient.getClient().create(RestApi.class);
+        Call<GetProfileImage> call = restApi.getCustomerImage(request.Customer_No
                 , request.credentials.PartnerCode, request.credentials.UserName,
                 request.credentials.UserPassword, request.credentials.LanguageID);
         call.enqueue(new retrofit2.Callback<GetProfileImage>() {

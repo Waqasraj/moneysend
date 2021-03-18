@@ -152,15 +152,15 @@
                     <TextView
                         android:id="@+id/pay_out_amount"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/height_50dp"
-                        android:layout_marginStart="@dimen/_5sdp"
-                        android:layout_marginEnd="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginEnd="@dimen/_5sdp"
                         android:layout_weight="1"
                         android:background="@drawable/background_select_mood"
                         android:fontFamily="@font/lato_semibold"
                         android:hint="@string/amount_hint"
+                        android:inputType="numberDecimal"
                         android:padding="@dimen/_10sdp"
-                        android:textColor="@color/black"
                         android:textSize="@dimen/text_size_16sp" />
                 </LinearLayout>
 

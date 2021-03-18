@@ -45,6 +45,7 @@
             </RelativeLayout>
 
         <EditText
+            android:digits="0123456789"
             android:textColor="@color/black"
             android:id="@+id/mobilesignupb"
             android:layout_width="0dp"
@@ -54,8 +55,7 @@
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
             android:hint="@string/phone_number_hint"
-            android:inputType="phone"
-            android:maxLength="10"
+           android:inputType="phone"
             android:maxLines="1"
             android:singleLine="true" />
 

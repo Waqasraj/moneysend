@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +36,8 @@ import tootipay.wallet.di.apicaller.EditCustomerProfileTask;
 import tootipay.wallet.di.apicaller.GetCustomerProfileTask;
 import tootipay.wallet.di.restRequest.UploadUserImageRequest;
 import tootipay.wallet.di.restResponse.ResponseApi;
+import tootipay.wallet.di.retrofit.APIError;
+import tootipay.wallet.di.retrofit.RestApi;
 import tootipay.wallet.di.retrofit.RestClient;
 import tootipay.wallet.dialogs.CustomPhotoDialog;
 import tootipay.wallet.interfaces.OnChooseImageType;
@@ -327,21 +330,37 @@ public class EditProfileActivity extends TootiBaseActivity<ActivityEditProfileBi
 
         uploadImage.Customer_No = sessionManager.getCustomerNo();
         uploadImage.credentials.LanguageID = Integer.parseInt(sessionManager.getlanguageselection());
-        Call<ResponseApi> call = RestClient.get().uploadCustomerImage(uploadImage);
+        RestApi restApi = RestClient.getClient().create(RestApi.class);
+        Call<ResponseApi> call = restApi.uploadCustomerImage(uploadImage);
 
         call.enqueue(new retrofit2.Callback<ResponseApi>() {
             @Override
             public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
-                progressBar.hideProgressDialogWithTitle();
 
+                progressBar.hideProgressDialogWithTitle();
                 if (response.isSuccessful()) {
-                    if (response.body().status.equalsIgnoreCase("101")) {
+                    //    assert response.body() != null;
+                    if (response.body().status == 101) {
                         binding.profilePictureImageView.setImageBitmap(thumbnail);
                         sessionManager.customerImage(uploadImage.Image);
                     } else {
                         onResponseMessage(response.body().description);
                     }
+                } else if (!response.isSuccessful() && response.errorBody() != null){
+
+                    APIError message = new Gson().fromJson(response.errorBody()
+                            .charStream(), APIError.class);
+                    if(message != null) {
+                        Toast.makeText(EditProfileActivity.this, "" +
+                                message.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        onMessage("Something went wrong");
+                    }
+
+                } else {
+                    onMessage("Something went wrong");
                 }
+
             }
 
             @Override

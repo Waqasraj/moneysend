@@ -96,14 +96,12 @@
                         android:orientation="horizontal"
                         android:weightSum="2">
 
-
                         <RelativeLayout
                             android:id="@+id/sending_currency_layout"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/_5sdp"
                             android:layout_weight="1">
-
 
                             <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/sending_currency_image"
@@ -112,8 +110,6 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/margin_10dp"
                                 android:src="@drawable/ic_united_kingdom" />
-
-
                             <TextView
                                 android:id="@+id/sending_currency"
                                 android:layout_width="match_parent"
@@ -131,7 +127,6 @@
 
                         </RelativeLayout>
 
-
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -145,7 +140,6 @@
                             android:layout_margin="@dimen/_5sdp"
                             android:layout_weight="1">
 
-
                             <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/receiving_currency_image"
                                 android:layout_width="@dimen/margin_20dp"
@@ -153,7 +147,6 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/margin_10dp"
                                 android:src="@drawable/ic_yemen" />
-
 
                             <TextView
                                 android:id="@+id/receiving_currency"
@@ -203,7 +196,8 @@
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_black_arrow" />
 
-                        <TextView
+                        <EditText
+                            android:inputType="numberDecimal"
                             android:id="@+id/pay_out_amount"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

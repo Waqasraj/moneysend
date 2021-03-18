@@ -38,9 +38,9 @@ public class BitmapHelper {
 
     public static String encodeImage(Bitmap bm)
     {
-        bm = getResizedBitmap(bm , 400);
+     //   bm = getResizedBitmap(bm , 400);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG,80,baos);
+        bm.compress(Bitmap.CompressFormat.JPEG,100,baos);
 
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);

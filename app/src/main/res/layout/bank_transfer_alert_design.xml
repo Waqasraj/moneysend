@@ -9,14 +9,13 @@
         android:layout_marginEnd="@dimen/margin_5dp"
         android:background="@drawable/round_corners"
         android:elevation="0dp"
-        app:cardCornerRadius="@dimen/corners_10dp"
         app:cardElevation="0dp">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/margin_20dp">
+            android:padding="@dimen/margin_10dp">
 
             <TextView
                 android:id="@+id/title"
@@ -27,7 +26,6 @@
                 android:text="@string/bank_details_txt"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size_15sp" />
-
 
             <TextView
                 android:id="@+id/message"
@@ -43,99 +41,42 @@
                 android:textColor="@color/black" />
 
 
-            <LinearLayout
-                android:id="@+id/bank_detail_layout"
+            <TextView
+                android:id="@+id/refer_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/message"
-                android:layout_marginTop="@dimen/margin_15dp"
-                android:background="@drawable/dash_border_drawable"
-                android:orientation="vertical"
-                android:padding="@dimen/margin_20dp"
-                android:visibility="visible">
+                android:layout_marginTop="@dimen/margin_5dp"
+                android:fontFamily="@font/lato_medium"
+                android:text="@string/refer_no"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_12sp" />
+
+            <TextView
+                android:id="@+id/reference_no"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/refer_title"
+                android:layout_marginTop="@dimen/margin_5dp"
+                android:fontFamily="@font/lato_medium"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_14sp" />
 
 
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/lato_medium"
-                    android:text="@string/refer_no"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/text_size_12sp" />
-
-                <TextView
-                    android:id="@+id/reference_no"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5dp"
-                    android:fontFamily="@font/lato_medium"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/lato_medium"
-                    android:text="@string/bank_account_title_txt"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/text_size_12sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5dp"
-                    android:fontFamily="@font/lato_medium"
-                    android:text="@string/toti_pay_limited_txt"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14sp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:id="@+id/bank_detail_recycler"
+                android:layout_width="match_parent"
+                android:layout_below="@id/reference_no"
+                android:layout_height="wrap_content"/>
 
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:fontFamily="@font/lato_medium"
-                    android:text="@string/sort_code"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/text_size_12sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5dp"
-                    android:fontFamily="@font/lato_medium"
-                    android:text="@string/sort_code_number"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14sp" />
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10dp"
-                    android:fontFamily="@font/lato_medium"
-                    android:text="@string/account_number"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/text_size_12sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5dp"
-                    android:fontFamily="@font/lato_medium"
-                    android:text="@string/toti_account_no"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14sp" />
-
-
-            </LinearLayout>
 
 
             <LinearLayout
+                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/bank_detail_layout"
                 android:layout_marginStart="@dimen/margin_5dp"
                 android:layout_marginTop="@dimen/margin_15dp"
                 android:layout_marginEnd="@dimen/margin_5dp"

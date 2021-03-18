@@ -61,4 +61,5 @@ public class SoapActionHelper {
     public static final String ACTION_WR_PERPAID_RECHARGE = "TPay/ITotiPay/WRPrepaidRecharge";
     public static final String ACTION_PREPAID_STATUS = "TPay/ITotiPay/WRPrepaidStatus";
     public static final String ACTION_CREATE_WALLET = "TPay/ITotiPay/CreateWallet";
+    public static final String ACTION_GET_BANK_NAMES_TOTIPAY = "TPay/ITotiPay/GetTotiPayAccDetails";
 }

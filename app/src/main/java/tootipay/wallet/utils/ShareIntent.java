@@ -42,7 +42,7 @@ public class ShareIntent {
 
         File imagePath = new File(context.getCacheDir(), "images");
         File newFile = new File(imagePath, "image.png");
-        Uri contentUri = FileProvider.getUriForFile(context, "totipay.wallet.provider", newFile);
+        Uri contentUri = FileProvider.getUriForFile(context, "tootipay.wallet.provider", newFile);
 
         if (contentUri != null) {
             Intent shareIntent = new Intent();
@@ -66,23 +66,13 @@ public class ShareIntent {
             FileOutputStream stream = new FileOutputStream(cachePath + "/image.png"); // overwrites this image every time
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             stream.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         File imagePath = new File(context.getCacheDir(), "images");
         File newFile = new File(imagePath, "image.png");
-        return FileProvider.getUriForFile(context, "totipay.wallet.provider", newFile);
-
-//        if (contentUri != null) {
-//            Intent shareIntent = new Intent();
-//            shareIntent.setAction(Intent.ACTION_SEND);
-//            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
-//            shareIntent.setDataAndType(contentUri, context.getContentResolver().getType(contentUri));
-//            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-//            context.startActivity(Intent.createChooser(shareIntent, "Choose an app"));
-//        }
+        return FileProvider.getUriForFile(context, "tootipay.wallet.provider", newFile);
     }
 
 }

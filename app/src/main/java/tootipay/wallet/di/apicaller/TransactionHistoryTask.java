@@ -83,16 +83,70 @@ public class TransactionHistoryTask extends AsyncTask<TransactionHistoryRequest,
                     for (int i = 0; i < array.length(); i++) {
                         jsonObject = array.getJSONObject(i);
                         TransactionHistoryResponse response = new TransactionHistoryResponse();
-                        response.transactionDate = jsonObject.getString("TRANSACTIONDATE");
-                        response.purposeOfTransfer = jsonObject.getString("PURPOSEOFTRANSFER");
-                        response.paymentTypeID = jsonObject.getInt("PAYMENTTYPEID");
-                        response.transactionNumber = jsonObject.getString("TRANSACTIONNUMBER");
-                        response.senderName = jsonObject.getString("SENDERNAME");
-                        response.receiverName = jsonObject.getString("RECEIVERNAME");
-                        response.sendingAmount = jsonObject.getString("SENDINGAMOUNT");
-                        response.receiverAmount = jsonObject.getString("RECEIVINGAMOUNT");
-                        response.status = jsonObject.getString("STATUS");
-                        response.currency = jsonObject.getString("CCYSHORTNAME");
+                        try {
+                            response.transactionDate = jsonObject.getString("TRANSACTIONDATE");
+
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+
+                        try {
+                            response.purposeOfTransfer = jsonObject.getString("PURPOSEOFTRANSFER");
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+
+                        try {
+                            response.paymentTypeID = jsonObject.getInt("PAYMENTTYPEID");
+
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+
+                        try {
+                            response.transactionNumber = jsonObject.getString("TRANSACTIONNUMBER");
+
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+
+                        try {
+                            response.senderName = jsonObject.getString("SENDERNAME");
+
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try {
+                            response.receiverName = jsonObject.getString("RECEIVERNAME");
+
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try {
+                            response.sendingAmount = jsonObject.getString("SENDINGAMOUNT");
+
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+
+                        try {
+                            response.receiverAmount = jsonObject.getString("RECEIVINGAMOUNT");
+
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try {
+                            response.status = jsonObject.getString("STATUS");
+
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
+                        try {
+                            response.currency = jsonObject.getString("CCYSHORTNAME");
+
+                        } catch (JSONException e) {
+                            Log.e("doInBackground: ", e.getLocalizedMessage());
+                        }
 
                         try {
                             response.paymentType = jsonObject.getString("PAYMENTTYPE");
@@ -114,26 +168,81 @@ public class TransactionHistoryTask extends AsyncTask<TransactionHistoryRequest,
                             .getJSONObject("NewDataSet").getJSONObject("Table1");
                     Log.e("doInBackground: ", jsonObject.toString());
                     TransactionHistoryResponse response = new TransactionHistoryResponse();
-                    response.transactionDate = jsonObject.getString("TRANSACTIONDATE");
-                    response.purposeOfTransfer = jsonObject.getString("PURPOSEOFTRANSFER");
-                    response.paymentType = jsonObject.getString("PAYMENTTYPE");
+                    try {
+                        response.transactionDate = jsonObject.getString("TRANSACTIONDATE");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+
+                    try {
+                        response.purposeOfTransfer = jsonObject.getString("PURPOSEOFTRANSFER");
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+
+                    try {
+                        response.paymentTypeID = jsonObject.getInt("PAYMENTTYPEID");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+
+                    try {
+                        response.transactionNumber = jsonObject.getString("TRANSACTIONNUMBER");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+
+                    try {
+                        response.senderName = jsonObject.getString("SENDERNAME");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try {
+                        response.receiverName = jsonObject.getString("RECEIVERNAME");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try {
+                        response.sendingAmount = jsonObject.getString("SENDINGAMOUNT");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+
+                    try {
+                        response.receiverAmount = jsonObject.getString("RECEIVINGAMOUNT");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try {
+                        response.status = jsonObject.getString("STATUS");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+                    try {
+                        response.currency = jsonObject.getString("CCYSHORTNAME");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+
+                    try {
+                        response.paymentType = jsonObject.getString("PAYMENTTYPE");
+
+                    } catch (JSONException e) {
+                        Log.e("doInBackground: ", e.getLocalizedMessage());
+                    }
+
                     try {
                         response.bankName = jsonObject.getString("BANKNAME");
                     }catch (Exception e) {
-                        Log.e("doInBackground: ", e.getLocalizedMessage());
-                    }
-                    response.transactionNumber = jsonObject.getString("TRANSACTIONNUMBER");
-                    response.senderName = jsonObject.getString("SENDERNAME");
-                    response.paymentTypeID = jsonObject.getInt("PaymentTypeID");
-                    response.statusID = jsonObject.getInt("STATUSID");
-                    response.receiverName = jsonObject.getString("RECEIVERNAME");
-                    response.sendingAmount = jsonObject.getString("SENDINGAMOUNT");
-                    response.receiverAmount = jsonObject.getString("RECEIVINGAMOUNT");
-                    response.status = jsonObject.getString("STATUS");
-                    response.currency = jsonObject.getString("CCYSHORTNAME");
-                    try {
-                        response.paymentType = jsonObject.getString("PAYMENTTYPE");
-                    } catch (JSONException e) {
                         Log.e("doInBackground: ", e.getLocalizedMessage());
                     }
 

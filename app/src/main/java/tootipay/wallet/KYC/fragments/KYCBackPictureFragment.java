@@ -10,11 +10,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -26,6 +28,8 @@ import tootipay.wallet.R;
 import tootipay.wallet.databinding.KycPictureLayoutBinding;
 import tootipay.wallet.di.restRequest.UploadKYCImage;
 import tootipay.wallet.di.restResponse.ResponseApi;
+import tootipay.wallet.di.retrofit.APIError;
+import tootipay.wallet.di.retrofit.RestApi;
 import tootipay.wallet.di.retrofit.RestClient;
 import tootipay.wallet.fragments.BaseFragment;
 import tootipay.wallet.interfaces.OnResponse;
@@ -187,22 +191,34 @@ public class KYCBackPictureFragment extends BaseFragment<KycPictureLayoutBinding
                 .sessionManager.getCustomerNo();
         uploadKYCImageRequest.credentials.LanguageID = Integer.parseInt(getSessionManager().getlanguageselection());
 
-        Call<ResponseApi> call = RestClient.get().uploadAttachment(uploadKYCImageRequest);
-
+        RestApi restApi = RestClient.getClient().create(RestApi.class);
+        Call<ResponseApi> call = restApi.uploadAttachment(uploadKYCImageRequest);
         call.enqueue(new retrofit2.Callback<ResponseApi>() {
             @Override
             public void onResponse(Call<ResponseApi> call, Response<ResponseApi> response) {
                 progressBar.hideProgressDialogWithTitle();
-
                 if (response.isSuccessful()) {
-                    if (response.body().status.equalsIgnoreCase("101")) {
+                    //    assert response.body() != null;
+                    if (response.body().status == 101) {
                         onSuccess();
                     } else {
                         onResponseMessage(response.body().description);
                     }
+                } else if (!response.isSuccessful() && response.errorBody() != null){
+
+                    APIError message = new Gson().fromJson(response.errorBody()
+                            .charStream(), APIError.class);
+                    if(message != null) {
+                        Toast.makeText(getBaseActivity(), "" +
+                                message.getMessage(), Toast.LENGTH_SHORT).show();
+                        onMessage(response.errorBody().toString());
+                    } else {
+                        onMessage("Something went wrong");
+                    }
+
+                } else {
+                    onMessage("Something went wrong");
                 }
-
-
             }
 
             @Override

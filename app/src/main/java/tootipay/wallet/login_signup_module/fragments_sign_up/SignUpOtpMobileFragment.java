@@ -238,6 +238,7 @@ public class SignUpOtpMobileFragment extends BaseFragment<EnterOtpBankingBinding
 
     @Override
     public void onResponseMessage(String message) {
+        Navigation.findNavController(binding.getRoot()).navigateUp();
         onMessage(message);
     }
 

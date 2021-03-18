@@ -132,7 +132,8 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_black_arrow" />
 
-                    <TextView
+                    <EditText
+                        android:inputType="numberDecimal"
                         android:id="@+id/pay_out_amount"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/height_50dp"

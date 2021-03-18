@@ -64,13 +64,19 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding> implements O
 
         ((NewDashboardActivity) getActivity()).hideHumBurger(ClassChangerHelper.HOME);
 
+
         if (getSessionManager().getIsDocumentsUploaded()) {
             binding.kycLayouts.setVisibility(View.GONE);
         }
-        Glide.with(this)
-                .load(BitmapHelper.decodeImage(((NewDashboardActivity) getBaseActivity()).sessionManager.getCustomerImage()))
-                .placeholder(getResources().getDrawable(R.drawable.user_profile_home))
-                .into(binding.userImageHome);
+
+        if(getSessionManager().getCustomerImage() != null) {
+            Glide.with(this)
+                    .load(BitmapHelper.decodeImage(getSessionManager().getCustomerImage()))
+                    .placeholder(getResources().getDrawable(R.drawable.user_profile_home))
+                    .into(binding.userImageHome);
+        }
+
+
 
         if (adapter != null && getSessionManager().isWalletNeedToUpdate()) {
             ((NewDashboardActivity) getBaseActivity()).homeViewModel.walletDetailsResponses.clear();
@@ -80,7 +86,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding> implements O
 
     @Override
     protected void setUp(Bundle savedInstanceState) {
-        setOffers();
+       // setOffers();
         setAccountsRecyclerView();
         onLoadView();
 
@@ -119,7 +125,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding> implements O
         });
 
 
-
         binding.walletHistoryCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,16 +141,16 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding> implements O
 
 
         binding.mobileTopUpCarview.setOnClickListener(view ->
-              //  startActivity(new Intent(getActivity(), MobileTopUpMainActivity.class))
+                //  startActivity(new Intent(getActivity(), MobileTopUpMainActivity.class))
                 startActivity(new Intent(getActivity(), LoyalityPointsActivity.class))
         );
         binding.billPaymentCarview.setOnClickListener(view ->
-              //  startActivity(new Intent(getActivity(), BillPaymentMainActivity.class))
+                //  startActivity(new Intent(getActivity(), BillPaymentMainActivity.class))
                 startActivity(new Intent(getActivity(), LoyalityPointsActivity.class))
         );
         binding.eGift.setOnClickListener(view ->
                         startActivity(new Intent(getActivity(), LoyalityPointsActivity.class))
-               // startActivity(new Intent(getActivity(), PrepaidCardsActivity.class))
+                // startActivity(new Intent(getActivity(), PrepaidCardsActivity.class))
         );
     }
 
@@ -224,7 +229,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding> implements O
     public void getWallet() {
         if (((NewDashboardActivity) getBaseActivity()).homeViewModel.walletDetailsResponses.isEmpty()) {
 
-            if(!binding.swipeRefresh.isRefreshing()) {
+            if (!binding.swipeRefresh.isRefreshing()) {
                 binding.swipeRefresh.setRefreshing(true);
             }
             if (IsNetworkConnection.checkNetworkConnection(getContext())) {
@@ -271,8 +276,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding> implements O
             ((NewDashboardActivity) getBaseActivity()).homeViewModel.walletDetailsResponses.addAll(walletList);
         }
 
-
-        Log.e("onCustomer ", String.valueOf(walletList.size()));
         getSessionManager().putWalletNeedToUpdate(false);
         adapter.notifyDataSetChanged();
         binding.swipeRefresh.setRefreshing(false);

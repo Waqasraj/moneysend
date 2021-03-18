@@ -542,8 +542,6 @@
     <string name="local_transfer">تحويل داخلي</string>
     <string name="inter_transfer">تحويل دولي</string>
     <string name="toti_pay_limited_txt">TotiPay Limited</string>
-    <string name="sort_code_number">60-83-71</string>
-    <string name="toti_account_no">70767547</string>
     <string name="no_bene_found">لا يوجد مستفيد</string>
     <string name="acount_number_m">رقم الحساب*‬</string>‬‬
     <string name="receiver_mobile_no">رقم هاتف المستفيد</string>
@@ -901,5 +899,19 @@ info@totipay .com</string>
     <string name="faq_ans_12"> لإلغاء تحويل الأموال أو طلب استرداد ، يرجى الاتصال بنا. يرجى ملاحظة أننا لن نتمكن من إجراء استرداد إذا تم دفع المعاملة</string>
 
     <string name="faq_ans_13">كدليل على الهوية ، يمكنك استخدام جواز السفر أو وثيقة الهوية الرسمية لبلد إقامتك. لاستخدام أنواع أخرى من المستندات ، يرجى الاتصال بنا للتحقق. يجب أن تكون المستندات صالحة خلال تاريخ انتهاء الصلاحية</string>
-
+    <string name="request_currency">عملة الطلب *</string>
+    <string name="plz_select_requesting_cur">الرجاء تحديد طلب العملة</string>
+    <string name="transaction_history_break">عملية تجارية \nالتاريخ</string>
+    <string name="wallet_history_break">المحفظة \nالتاريخ</string>
+    <string name="create_wallet">خلق \المحفظة</string>
+    <string name="wallet_currecny_txt">تحديد المحفظة*</string>
+    <string name="create_wallet_txt">خلق المحفظة</string>
+    <string name="select_new_wallet">الرجاء تحديد المحفظة الجديدة</string>
+    <string name="create_new_wallet">إنشاء محفظة جديدة </string>
+    <string name="contact_to_admin">آسف لهذه المشكلة ، يرجى الاتصال بالمسؤول</string>
+    <string name="plz_enter_amount">"الرجاء إدخال المبلغ"</string>
+    <string name="pay_text">نقل الآن</string>
+    <string name="update_available">تحديث متوفر</string>
+    <string name="update_available_msg">تحقق من أحدث إصدار متاح من تطبيق totipay!</string>
+    <string name="update">تحديث</string>
 </resources>

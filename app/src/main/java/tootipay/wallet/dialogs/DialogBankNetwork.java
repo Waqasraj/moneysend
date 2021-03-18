@@ -120,6 +120,4 @@ public class DialogBankNetwork extends BaseDialogFragment<TransferDialogPurposeB
         onSelectBank.onSelectBranch(branchName);
         cancelUpload();
     }
-
-
 }

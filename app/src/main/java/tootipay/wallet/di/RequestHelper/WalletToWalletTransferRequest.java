@@ -27,7 +27,7 @@ public class WalletToWalletTransferRequest {
                 "</tpay:Credentials>" +
                 "<tpay:Customer_No>" + customerNo + "</tpay:Customer_No>" +
                 "<tpay:PayIn_Currency>" + payInCurrency + "</tpay:PayIn_Currency>" +
-                "<tpay:Recipient_Mobile_No>" + receiptMobileNo + "</tpay:Recipient_Mobile_No>" +
+                "<tpay:Recipient_Mobile_No>" + receiptMobileNo.replace(" ", "") + "</tpay:Recipient_Mobile_No>" +
                 "<tpay:Recipient_Currency>" + receiptCurrency + "</tpay:Recipient_Currency>" +
                 "<tpay:Transfer_Amount>" + transferAmount + "</tpay:Transfer_Amount>" +
                 "<tpay:Description>" + description + "</tpay:Description>" +

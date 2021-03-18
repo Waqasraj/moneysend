@@ -206,10 +206,12 @@ public class NewDashboardActivity extends TootiBaseActivity<ActivityNewDashboard
     @Override
     protected void onResume() {
         super.onResume();
-        Glide.with(this)
-                .load(BitmapHelper.decodeImage(sessionManager.getCustomerImage()))
-                .placeholder(R.drawable.user_profile_home)
-                .into(binding.profileImage);
+        if(sessionManager.getCustomerImage() != null) {
+            Glide.with(this)
+                    .load(BitmapHelper.decodeImage(sessionManager.getCustomerImage()))
+                    .placeholder(R.drawable.user_profile_home)
+                    .into(binding.profileImage);
+        }
 
     }
 
