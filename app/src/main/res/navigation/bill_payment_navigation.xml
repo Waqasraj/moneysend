@@ -2,145 +2,52 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bill_payment_activity"
+    android:id="@+id/billpayment_navigation"
     app:startDestination="@id/utilityBillPaymentPlanFragment">
 
+
     <fragment
-        android:id="@+id/moneyTransferActivity"
-        android:name="tootipay.wallet.billpayment.fragments.MoneyTransferActivity"
-        android:label="MoneyTransferActivity"
-        tools:layout="@layout/activity_money_transfer"/>
-    <fragment
-        android:id="@+id/electricityBillActivity"
-        android:name="tootipay.wallet.billpayment.fragments.ElectricityBillActivity"
-        android:label="ElectricityBillActivity"
-        tools:layout="@layout/activity_electricity_bill">
+        tools:layout="@layout/transfer_dialog_purpose"
+        android:id="@+id/utilityCategoryBFragment"
+        android:name="workerappz.wallet.billpayment.updated_fragments.UtilityCategoryBFragment"
+        android:label="UtilityCategoryBFragment" >
         <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_electricityBillActivity_to_newOutstandingBillActivity"
-            app:destination="@id/newOutstandingBillActivity" />
-        <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_electricityBillActivity_to_addBeneficiaryTypeActivity"
-            app:destination="@id/addBeneficiaryTypeActivity" />
+            android:id="@+id/action_utilityCategoryBFragment_to_utilityBillPaymentPlanFragment"
+            app:destination="@id/utilityBillPaymentPlanFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/newOutstandingBillActivity"
-        android:name="tootipay.wallet.billpayment.fragments.NewOutstandingBillActivity"
-        android:label="NewOutstandingBillActivity"
-        tools:layout="@layout/activity_new_outstanding_bill" >
-        <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_newOutstandingBillActivity_to_selectBillPaymentModeActivity"
-            app:destination="@id/selectBillPaymentModeActivity" />
-    </fragment>
-    <fragment
-        tools:layout="@layout/activity_select_bill_payment_mode"
-        android:id="@+id/selectBillPaymentModeActivity"
-        android:name="tootipay.wallet.billpayment.fragments.SelectBillPaymentModeActivity"
-        android:label="SelectBillPaymentModeActivity" >
-        <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_selectBillPaymentModeActivity_to_paymentDoneActivity"
-            app:destination="@id/paymentDoneActivity" />
-    </fragment>
-    <fragment
-        tools:layout="@layout/activity_payment_done"
-        android:id="@+id/paymentDoneActivity"
-        android:name="tootipay.wallet.billpayment.fragments.PaymentDoneActivity"
-        android:label="PaymentDoneActivity" />
-    <fragment
-        tools:layout="@layout/activity_add_baneficily_type"
-        android:id="@+id/addBeneficiaryTypeActivity"
-        android:name="tootipay.wallet.billpayment.fragments.AddBeneficiaryTypeActivity"
-        android:label="AddBeneficiaryTypeActivity" >
-        <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_addBeneficiaryTypeActivity_to_electricityAddNewAccountActivity"
-            app:destination="@id/electricityAddNewAccountActivity" />
-    </fragment>
-    <fragment
-        android:id="@+id/electricityAddNewAccountActivity"
-        android:name="tootipay.wallet.billpayment.fragments.ElectricityAddNewAccountActivity"
-        android:label="ElectricityAddNewAccountActivity" >
-        <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_electricityAddNewAccountActivity_to_electricityProviderActivity"
-            app:destination="@id/electricityProviderActivity" />
-    </fragment>
-    <fragment
-        android:id="@+id/electricityProviderActivity"
-        android:name="tootipay.wallet.billpayment.fragments.ElectricityProviderActivity"
-        android:label="ElectricityProviderActivity" />
-    <fragment
-        android:id="@+id/WRBillerPaymentFragment2"
-        android:name="tootipay.wallet.Mobile_Top_Up.fragments.WRBillerPaymentFragment"
-        android:label="WRBillerPaymentFragment" />
     <fragment
         android:id="@+id/utilityBillPaymentPlanFragment"
-        android:name="tootipay.wallet.billpayment.updated_fragments.UtilityBillPaymentPlanFragment"
+        android:name="workerappz.wallet.billpayment.updated_fragments.UtilityBillPaymentPlanFragment"
         android:label="UtilityBillPaymentPlanFragment" >
         <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_utilityBillPaymentPlanFragment_to_utilityPaymentPlanFragment"
-            app:destination="@id/utilityPaymentPlanFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/utilityPaymentAccountNoFragment"
-        android:name="tootipay.wallet.billpayment.updated_fragments.UtilityPaymentAccountNoFragment"
-        android:label="UtilityPaymentAccountNoFragment" >
-        <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_utilityPaymentAccountNoFragment_to_utilityBillerDetailsFragment"
-            app:destination="@id/utilityBillerDetailsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/utilityPaymentPlanFragment"
-        android:name="tootipay.wallet.billpayment.updated_fragments.UtilityPaymentPlanFragment"
-        android:label="UtilityPaymentPlanFragment" >
-        <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_utilityPaymentPlanFragment_to_utilityPaymentAccountNoFragment"
+            android:id="@+id/action_utilityBillPaymentPlanFragment_to_utilityPaymentAccountNoFragment"
             app:destination="@id/utilityPaymentAccountNoFragment" />
     </fragment>
     <fragment
+        android:id="@+id/utilityPaymentAccountNoFragment"
+        android:name="workerappz.wallet.billpayment.updated_fragments.UtilityPaymentAccountNoFragment"
+        android:label="UtilityPaymentAccountNoFragment" >
+        <action
+            android:id="@+id/action_utilityPaymentAccountNoFragment_to_utilityBillerDetailsFragment"
+            app:destination="@id/utilityBillerDetailsFragment" />
+        <action
+            android:id="@+id/action_utilityPaymentAccountNoFragment_to_paymentAmountValidationFragment"
+            app:destination="@id/paymentAmountValidationFragment" />
+    </fragment>
+    <fragment
         android:id="@+id/utilityBillerDetailsFragment"
-        android:name="tootipay.wallet.billpayment.updated_fragments.UtilityBillerDetailsFragment"
+        android:name="workerappz.wallet.billpayment.updated_fragments.UtilityBillerDetailsFragment"
         android:label="UtilityBillerDetailsFragment" >
         <action
-            app:enterAnim="@anim/slide_in_anim"
-            app:exitAnim="@anim/slide_out_right"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_left"
-            android:id="@+id/action_utilityBillerDetailsFragment_to_WRBillerPaymentFragment2"
-            app:destination="@id/WRBillerPaymentFragment2" />
+            android:id="@+id/action_utilityBillerDetailsFragment_to_payBillFragment"
+            app:destination="@id/payBillFragment" />
     </fragment>
-
+    <fragment
+        android:id="@+id/payBillFragment"
+        android:name="workerappz.wallet.billpayment.updated_fragments.PayBillFragment"
+        android:label="PayBillFragment" />
+    <fragment
+        android:id="@+id/paymentAmountValidationFragment"
+        android:name="workerappz.wallet.billpayment.fragments.PaymentAmountValidationFragment"
+        android:label="PaymentAmountValidationFragment" />
 </navigation>
